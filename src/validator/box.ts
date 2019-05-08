@@ -1,5 +1,7 @@
 import {Datum, ErrorInfo, GlobalConfig, Validator} from "../validator";
 import * as _ from 'lodash'
+import {BoxConfig, BoxConfigValidator} from "./box-config";
+import {MaterialValidator} from "./material";
 
 export interface Box extends Datum {
     goodsId: number
@@ -22,10 +24,10 @@ export class BoxValidator extends Validator {
             })
         }
 
-        if (!_.includes(GlobalConfig.boxConfig, box.boxID)) {
+        if (!_.includes(BoxConfigValidator.boxIdSet, box.boxID)) {
             errorInfo.message.push({
                 index: index,
-                message: "礼盒ID需在礼盒配置表中存在"
+                message: "礼盒ID需在礼盒配置表中存在:" +  box.boxID
             })
         }
 
@@ -45,10 +47,10 @@ export class BoxValidator extends Validator {
             BoxValidator.goodsIdSet.push(box.goodsId)
         }
 
-        if (!_.includes(GlobalConfig.itemsConfig, box.goodsId)) {
+        if (!_.includes(MaterialValidator.goodsIdSet, box.goodsId)) {
             errorInfo.message.push({
                 index: index,
-                message: "物品ID需在物品配置表中存在"
+                message: "物品ID需在物品配置表中存在:" + box.goodsId
             })
         }
 

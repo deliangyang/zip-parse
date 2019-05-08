@@ -15,8 +15,42 @@ export abstract class Validator {
 
     errorInfo: ErrorInfo
 
-    public setFiles(files: Array<string>) {
+    public static setFiles(files: Array<string>) {
         Validator.files = files
+    }
+
+    protected checkEmpty(name: string, data: any, errorInfo: ErrorInfo, index: number,
+                         ngt?: number | null, nlt?: number | null) {
+        let flag = false;
+        if (typeof data === 'number') {
+            if (data <= 0) {
+                flag = true
+            }
+        } else {
+            if (data.length <= 0) {
+                flag = true
+            }
+        }
+        if (flag) {
+            errorInfo.message.push({
+                index: index,
+                message: name + "不能为空"
+            })
+        }
+
+        if (ngt && typeof data === 'string' && data.length > ngt) {
+            errorInfo.message.push({
+                index: index,
+                message: name + '长度检测（不能超过20个字）'
+            })
+        }
+
+        if (nlt && typeof data === 'number' && data < nlt) {
+            errorInfo.message.push({
+                index: index,
+                message: name + '需大于或等于1'
+            })
+        }
     }
 }
 

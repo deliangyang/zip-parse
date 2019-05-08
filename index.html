@@ -1,0 +1,32 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="./bundle.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+</head>
+<input type="file" name="a" id="file">
+
+<h3>错误信息：</h3>
+<hr>
+<div class="error"></div>
+
+<script type="text/javascript">
+    $("#file").on("change", function(evt) {
+        var files = evt.target.files;
+        console.log(evt.target.files[0])
+        parse(files[0]).then(function(data) {
+            console.log(data)
+            $('.error').html('')
+            data.forEach(function(element, index) {
+                $('.error').append(++index + ":\t" + element + "<br />")
+            })
+        }).catch(function(e) {
+            console.log(e)
+        })
+    })
+</script>
+<body>
+</body>
+</html>

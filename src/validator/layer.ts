@@ -13,22 +13,20 @@ export class LayerValidator extends Validator {
 
     static layerDownSet: Array<number> = []
     static layerUpSet: Array<number> = []
+    static layerIdSet: Array<number> = []
     static index = 0
-
-    constructor() {
-        super()
-    }
 
     validate(layer: Layer, errorInfo: ErrorInfo): void {
         let index = LayerValidator.index++
 
+        LayerValidator.layerIdSet.push(layer.layerId)
         if (layer.layerId <= 0) {
             errorInfo.message.push({
                 index: index,
                 message: "层级ID不能为空"
             })
         }
-        if (layer.category.length <= 0) {
+        if (!layer.category || layer.category.length <= 0) {
             errorInfo.message.push({
                 index: index,
                 message: "类别不能为空"

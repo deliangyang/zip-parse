@@ -7,7 +7,7 @@ export interface CategoryItem extends Datum {
     category: string
     categoryHk: string
     categoryTw: string
-    gender: string
+    gender: number
     picGrey: string
     size: number
 }
@@ -19,11 +19,7 @@ export class CategoryValidator extends Validator {
     static categorySet: Array<string> = []
     static categoryHkSet: Array<string> = []
     static categoryTwSet: Array<string> = []
-
-    constructor() {
-        super()
-        this.setFiles([])
-    }
+    gender: Array<number> = [1, 2]
 
     validate(categoryItem: CategoryItem, errorInfo: ErrorInfo): void {
         ++CategoryValidator.index
@@ -48,14 +44,14 @@ export class CategoryValidator extends Validator {
         this.validateCategory('服装类别(台湾繁体)', categoryItem.categoryTw, CategoryValidator.index, CategoryValidator.categoryTwSet, errorInfo)
         this.validateCategory('服装类别(香港繁体)', categoryItem.categoryHk, CategoryValidator.index, CategoryValidator.categoryHkSet, errorInfo)
 
-        if (categoryItem.gender.length <= 0) {
+        if (categoryItem.gender <= 0) {
             errorInfo.message.push({
                 index: CategoryValidator.index,
                 message: "性别不能为空"
             })
         }
 
-        if (categoryItem.gender !== '男' && categoryItem.gender !== '女') {
+        if (!_.includes(this.gender, categoryItem.gender)) {
             errorInfo.message.push({
                 index: CategoryValidator.index,
                 message: "性别只能为男或女"
@@ -102,7 +98,7 @@ export class CategoryValidator extends Validator {
         if (!_.includes(Validator.files, filename)) {
             errorInfo.message.push({
                 index: index,
-                message: name + "文件必须存在"
+                message: name + "文件必须存在:" + filename
             })
         }
 
