@@ -9,7 +9,7 @@ export interface BoxConfig extends Datum {
     weight: number
     picMale: string
     freeCd: number | string
-    time: number
+    time: number | string
     picFemale: string
     boxname: string
     boxId: number
@@ -46,10 +46,11 @@ export class BoxConfigValidator extends Validator {
             })
         }
 
-        if (boxConfig.time && !/^\d{11}$/.test('' + boxConfig.time)) {
+        if (boxConfig.time && (!/^\d{10}$/.test('' + boxConfig.time)
+            || !/^\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{2}:\d{2}(\d{2})?$/) ) {
             errorInfo.message.push({
                 index: index,
-                message: '上线时间时间格式不正确'
+                message: '上线时间时间格式不正确(时间戳或字符串)'
             })
         }
         this.validateFile("封面图-女", boxConfig.picFemale, BoxConfigValidator.index, boxConfig.picFemaleSize, errorInfo)

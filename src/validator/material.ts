@@ -79,10 +79,11 @@ export class MaterialValidator extends Validator {
             this.validateFile("下层切片", material.picDown, index, material.picDownSize, errorInfo)
         }
 
-        if (material.time && !/^\d{11}$/.test('' + material.time)) {
+        if (material.time && (!/^\d{10}$/.test('' + material.time)
+            || !/^\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{2}:\d{2}(\d{2})?$/)) {
             errorInfo.message.push({
                 index: index,
-                message: '时间格式不正确'
+                message: '时间格式不正确（时间戳或字符串）'
             })
         }
 
