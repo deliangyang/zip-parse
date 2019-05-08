@@ -2,6 +2,7 @@ import {Datum, ErrorInfo, Validator} from "../validator";
 import * as _ from 'lodash'
 import {LayerValidator} from "./layer";
 import {CategoryValidator} from "./category";
+import * as JSZip from "jszip";
 
 
 export interface Material extends Datum {
@@ -44,6 +45,11 @@ export class MaterialValidator extends Validator {
     itemLevel: Array<string> = ['S', 'SS']
     gender: Array<number> = [1, 2]
     type: Array<string> = ['成品', '碎片']
+
+    constructor(zip: JSZip) {
+        super(zip);
+    }
+
 
     validate(material: Material, errorInfo: ErrorInfo): void {
         let index = ++MaterialValidator.index
@@ -169,26 +175,4 @@ export class MaterialValidator extends Validator {
         }
     }
 
-    private validateFile(name: string, filename: string, index: number, size: number, errorInfo: ErrorInfo) {
-        if (filename.length <= 0) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "不能为空"
-            })
-        }
-
-        if (!_.includes(Validator.files, filename)) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "文件必须存在:" + filename
-            })
-        }
-
-        if (size > Validator.fileSize) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "文件格式及大小"
-            })
-        }
-    }
 }

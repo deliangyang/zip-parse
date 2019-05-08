@@ -1,5 +1,7 @@
 import {Datum, ErrorInfo, Validator} from "../validator";
 import * as _ from "lodash";
+import * as JSZip from "jszip";
+import {JSZipObject} from "jszip";
 
 export interface BoxConfig extends Datum {
     priceMul: number
@@ -25,6 +27,13 @@ export class BoxConfigValidator extends Validator {
     static boxNameSet: Array<number> = []
     static boxNameTwSet: Array<number> = []
     static boxNameHkSet: Array<number> = []
+    zip: JSZip
+
+    constructor(zip: JSZip) {
+        super();
+        this.zip = zip
+    }
+
 
     validate(boxConfig: BoxConfig, errorInfo: ErrorInfo): void {
         let index = ++BoxConfigValidator.index
@@ -47,7 +56,7 @@ export class BoxConfigValidator extends Validator {
         }
 
         if (boxConfig.time && (!/^\d{10}$/.test('' + boxConfig.time)
-            || !/^\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{2}:\d{2}(\d{2})?$/) ) {
+            || !/^\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{2}:\d{2}(\d{2})?$/)) {
             errorInfo.message.push({
                 index: index,
                 message: '上线时间时间格式不正确(时间戳或字符串)'
@@ -77,29 +86,6 @@ export class BoxConfigValidator extends Validator {
             })
         } else {
             set.push(data)
-        }
-    }
-
-    private validateFile(name: string, filename: string, index: number, size: number, errorInfo: ErrorInfo) {
-        if (filename.length <= 0) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "不能为空"
-            })
-        }
-
-        if (!_.includes(Validator.files, filename)) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "文件必须存在:" + filename
-            })
-        }
-
-        if (size > Validator.fileSize) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "文件格式及大小"
-            })
         }
     }
 

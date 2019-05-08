@@ -20,3 +20,7 @@ $("#file").on("change", function(evt) {
     })
 })
 ```
+
+### Result
+
+![测试结果图片](images/result.png)

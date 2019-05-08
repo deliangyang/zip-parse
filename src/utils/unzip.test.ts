@@ -33,13 +33,13 @@ function ZipParse(data: any) {
                 text = text.replace(String.fromCharCode(65279), '')
                 let items: Array<CategoryItem> = JSON.parse(text)
                 items.forEach(element => {
-                    let category = new CategoryValidator()
+                    let category = new CategoryValidator(zip)
                     category.validate(element, errorInfo)
                 })
             }).catch(e => {
                 console.log(e)
             })
-            result.push(...errorInfo.trace())
+            result.push(...await errorInfo.trace())
 
             filename = 'abc/hierarchy.json'
             errorInfo = new ErrorInfo(filename, 0)
@@ -61,7 +61,7 @@ function ZipParse(data: any) {
                 text = text.replace(String.fromCharCode(65279), '')
                 let items: Array<Material> = JSON.parse(text)
                 items.forEach(element => {
-                    let layer = new MaterialValidator()
+                    let layer = new MaterialValidator(zip)
                     layer.validate(element, errorInfo)
                 })
             }).catch(e => {
@@ -75,13 +75,13 @@ function ZipParse(data: any) {
                 text = text.replace(String.fromCharCode(65279), '')
                 let items: Array<BoxConfig> = JSON.parse(text)
                 items.forEach(element => {
-                    let layer = new BoxConfigValidator()
+                    let layer = new BoxConfigValidator(zip)
                     layer.validate(element, errorInfo)
                 })
             }).catch(e => {
                 console.log(e)
             })
-            result.push(...errorInfo.trace())
+            result.push(...await errorInfo.trace())
 
             filename = 'abc/gift_box.json'
             errorInfo = new ErrorInfo(filename, 0)

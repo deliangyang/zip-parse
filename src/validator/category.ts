@@ -1,5 +1,6 @@
 import {Datum, ErrorInfo, Validator} from "../validator";
 import * as _ from 'lodash'
+import * as JSZip from "jszip";
 
 export interface CategoryItem extends Datum {
     categoryId: number
@@ -9,7 +10,8 @@ export interface CategoryItem extends Datum {
     categoryTw: string
     gender: number
     picGrey: string
-    size: number
+    picSize: number
+    picGreySize: number
 }
 
 export class CategoryValidator extends Validator {
@@ -20,6 +22,11 @@ export class CategoryValidator extends Validator {
     static categoryHkSet: Array<string> = []
     static categoryTwSet: Array<string> = []
     gender: Array<number> = [1, 2]
+
+    constructor(zip: JSZip) {
+        super(zip);
+    }
+
 
     validate(categoryItem: CategoryItem, errorInfo: ErrorInfo): void {
         ++CategoryValidator.index
@@ -58,8 +65,8 @@ export class CategoryValidator extends Validator {
             })
         }
 
-        this.validateFile("切片-正常", categoryItem.pic, CategoryValidator.index, categoryItem.size, errorInfo)
-        this.validateFile("切片-灰", categoryItem.picGrey, CategoryValidator.index, categoryItem.size, errorInfo)
+        this.validateFile("切片-正常", categoryItem.pic, CategoryValidator.index, categoryItem.picSize, errorInfo)
+        this.validateFile("切片-灰", categoryItem.picGrey, CategoryValidator.index, categoryItem.picGreySize, errorInfo)
     }
 
     private validateCategory(name: string, category: string, index: number, set: Array<string>, errorInfo: ErrorInfo) {
@@ -87,27 +94,5 @@ export class CategoryValidator extends Validator {
         }
     }
 
-    private validateFile(name: string, filename: string, index: number, size: number, errorInfo: ErrorInfo) {
-        if (filename.length <= 0) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "不能为空"
-            })
-        }
-
-        if (!_.includes(Validator.files, filename)) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "文件必须存在:" + filename
-            })
-        }
-
-        if (size > Validator.fileSize) {
-            errorInfo.message.push({
-                index: index,
-                message: name + "文件格式及大小"
-            })
-        }
-    }
 
 }

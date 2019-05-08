@@ -1,4 +1,6 @@
 import {CategoryItem} from "./validator/category";
+import * as _ from "lodash";
+import * as JSZip from "jszip";
 
 
 export class Datum {
@@ -7,13 +9,19 @@ export class Datum {
 
 export abstract class Validator {
 
-    public static fileSize: number
+    public static fileSize: number = 500 * 1024
 
     abstract validate(datum: Datum, errorInfo: ErrorInfo): void
 
     protected static files: Array<string> = []
 
     errorInfo: ErrorInfo
+
+    zip: JSZip
+
+    constructor(zip?: JSZip) {
+        this.zip = zip
+    }
 
     public static setFiles(files: Array<string>) {
         Validator.files = files
@@ -51,6 +59,42 @@ export abstract class Validator {
                 message: name + '需大于或等于1'
             })
         }
+    }
+
+    protected validateFile(name: string, filename: string, index: number, size: number, errorInfo: ErrorInfo) {
+        if (filename.length <= 0) {
+            errorInfo.message.push({
+                index: index,
+                message: name + "不能为空"
+            })
+        }
+
+        if (!_.includes(Validator.files, filename)) {
+            errorInfo.message.push({
+                index: index,
+                message: name + "文件必须存在:" + filename
+            })
+        }
+
+        let _filename = 'abc/images/' + filename + '.png'
+        let file = this.zip.file(_filename)
+        if (file) {
+            let size:number|string = JSON.stringify(file)
+                .substr(0, 300)
+                .match(/"uncompressedSize":(\d+)/).pop()
+            if (parseInt(size) > Validator.fileSize) {
+                errorInfo.message.push({
+                    index: index,
+                    message: name + ":" + filename + ", 文件大小超过500k"
+                })
+            }
+        } else {
+            errorInfo.message.push({
+                index: index,
+                message: name + ":" + filename + ", 不存在无法计算大小"
+            })
+        }
+
     }
 }
 
