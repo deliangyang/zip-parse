@@ -1,2 +1,2 @@
 
-declare function parse(data: any): Promise<any>;
+declare function ZipParse(data: any): Promise<any>;

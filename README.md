@@ -10,7 +10,7 @@ npm run dev
 ```js
 $("#file").on("change", function(evt) {
     var files = evt.target.files;
-    parse(files[0]).then(function(data) {
+    ZipParse(files[0]).then(function(data) {
         $('.error').html('')
         data.forEach(function(element, index) {
             $('.error').append(++index + ":\t" + element + "<br />")

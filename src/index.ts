@@ -6,12 +6,11 @@ import {Box, BoxValidator} from "./validator/box";
 import {BoxConfig, BoxConfigValidator} from "./validator/box-config";
 import {Material, MaterialValidator} from "./validator/material";
 
-function parse(data: any) {
-    console.log(data)
+function ZipParse(data: any) {
+
     return new Promise((resolve, rejects) => {
         JSZip.loadAsync(data).then( async function (zip) {
             let result: Array<string> = []
-
             let files: Array<string> = []
             let name: string
             zip.forEach((relativePath, zipEntry) => {
@@ -48,7 +47,7 @@ function parse(data: any) {
             }).catch(e => {
                 console.log(e)
             })
-            console.log(errorInfo.trace())
+            result.push(...errorInfo.trace())
 
             filename = 'abc/assist.json'
             errorInfo = new ErrorInfo(filename, 0)
@@ -100,4 +99,4 @@ function parse(data: any) {
 }
 
 
-(<any>window)['parse'] = parse
+(<any>window)['ZipParse'] = ZipParse
