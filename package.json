@@ -1,0 +1,31 @@
+{
+  "name": "ts-dev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/jszip": "^3.1.5",
+    "axios": "^0.18.0",
+    "chai": "^4.2.0",
+    "jszip": "^3.2.1",
+    "lodash": "^4.17.11",
+    "ts-node": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.123",
+    "@types/mocha": "^5.2.6",
+    "@types/should": "^13.0.0",
+    "commonjs": "0.0.1",
+    "ts-loader": "^5.4.6",
+    "typescript": "^3.4.5"
+  },
+  "scripts": {
+    "test": "mocha -r ./node_modules/ts-node/register src/**/*.test.ts",
+    "dev": "webpack",
+    "watch": "webpack --watch",
+    "clean": "rm -rf src/**/*.js && rm -rf src/**/*.js.map"
+  },
+  "author": "",
+  "license": "ISC"
+}
