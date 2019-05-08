@@ -98,5 +98,4 @@ function ZipParse(data: any) {
     })
 }
 
-
 (<any>window)['ZipParse'] = ZipParse
