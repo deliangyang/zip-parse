@@ -25,7 +25,7 @@
     "test": "mocha -r ./node_modules/ts-node/register src/**/*.test.ts",
     "dev": "webpack",
     "watch": "webpack --watch",
-    "clean": "rm -rf src/**/*.js && rm -rf src/**/*.js.map"
+    "clean": "rm -rf src/**/*.js && rm -rf src/**/*.js.map && rm -rf src/*.js && rm -rf src/*.js.map"
   },
   "author": "",
   "license": "ISC"
