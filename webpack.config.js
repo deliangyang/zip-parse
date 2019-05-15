@@ -2,7 +2,9 @@ module.exports = {
     entry: "./src/index.ts",
     mode: "development",
     output: {
-        filename: "bundle.js"
+        filename: "bundle.js",
+        library: "DressUp",
+        libraryTarget: "umd",
     },
     resolve: {
         // Add '.ts' and '.tsx' as a resolvable extension.

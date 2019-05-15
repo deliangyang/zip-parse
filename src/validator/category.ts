@@ -1,17 +1,23 @@
-import {Datum, ErrorInfo, Validator} from "../validator";
+import {Datum, ErrorInfo, I18N, Validator} from "../validator";
 import * as _ from 'lodash'
 import * as JSZip from "jszip";
 
+interface Slice {
+    normal: string,
+    grey: string
+}
+
+interface SliceSize {
+    normal: number,
+    grey: number
+}
+
 export interface CategoryItem extends Datum {
-    categoryId: number
-    pic: string
-    category: string
-    categoryHk: string
-    categoryTw: string
+    id: number
+    name: I18N
     gender: number
-    picGrey: string
-    picSize: number
-    picGreySize: number
+    slice: Slice
+    // sliceSize: SliceSize
 }
 
 export class CategoryValidator extends Validator {
@@ -31,25 +37,25 @@ export class CategoryValidator extends Validator {
     validate(categoryItem: CategoryItem, errorInfo: ErrorInfo): void {
         ++CategoryValidator.index
 
-        if (categoryItem.categoryId <= 0) {
+        if (categoryItem.id <= 0) {
             errorInfo.message.push({
                 index: CategoryValidator.index,
                 message: "类别ID不能为空"
             })
         }
 
-        if (_.includes(CategoryValidator.idSet, categoryItem.categoryId)) {
+        if (_.includes(CategoryValidator.idSet, categoryItem.id)) {
             errorInfo.message.push({
                 index: CategoryValidator.index,
                 message: "类别ID不能重复"
             })
         } else {
-            CategoryValidator.idSet.push(categoryItem.categoryId)
+            CategoryValidator.idSet.push(categoryItem.id)
         }
 
-        this.validateCategory('服装类别(简体中文)', categoryItem.category, CategoryValidator.index, CategoryValidator.categorySet, errorInfo)
-        this.validateCategory('服装类别(台湾繁体)', categoryItem.categoryTw, CategoryValidator.index, CategoryValidator.categoryTwSet, errorInfo)
-        this.validateCategory('服装类别(香港繁体)', categoryItem.categoryHk, CategoryValidator.index, CategoryValidator.categoryHkSet, errorInfo)
+        this.validateCategory('服装类别(简体中文)', categoryItem.name.cn, CategoryValidator.index, CategoryValidator.categorySet, errorInfo)
+        this.validateCategory('服装类别(台湾繁体)', categoryItem.name.tw, CategoryValidator.index, CategoryValidator.categoryTwSet, errorInfo)
+        this.validateCategory('服装类别(香港繁体)', categoryItem.name.hk, CategoryValidator.index, CategoryValidator.categoryHkSet, errorInfo)
 
         if (categoryItem.gender <= 0) {
             errorInfo.message.push({
@@ -65,8 +71,8 @@ export class CategoryValidator extends Validator {
             })
         }
 
-        this.validateFile("切片-正常", categoryItem.pic, CategoryValidator.index, categoryItem.picSize, errorInfo)
-        this.validateFile("切片-灰", categoryItem.picGrey, CategoryValidator.index, categoryItem.picGreySize, errorInfo)
+        this.validateFile("切片-正常", categoryItem.slice.normal, CategoryValidator.index, errorInfo)
+        this.validateFile("切片-灰", categoryItem.slice.grey, CategoryValidator.index, errorInfo)
     }
 
     private validateCategory(name: string, category: string, index: number, set: Array<string>, errorInfo: ErrorInfo) {

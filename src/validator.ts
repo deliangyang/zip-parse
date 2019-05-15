@@ -7,6 +7,12 @@ export class Datum {
 
 }
 
+export interface I18N {
+    cn: string
+    hk: string
+    tw: string
+}
+
 export abstract class Validator {
 
     public static fileSize: number = 500 * 1024
@@ -61,7 +67,7 @@ export abstract class Validator {
         }
     }
 
-    protected validateFile(name: string, filename: string, index: number, size: number, errorInfo: ErrorInfo) {
+    protected validateFile(name: string, filename: string, index: number, errorInfo: ErrorInfo) {
         if (filename.length <= 0) {
             errorInfo.message.push({
                 index: index,
@@ -108,7 +114,7 @@ export class ErrorInfo {
     index: number
     message: Array<object>
 
-    constructor(filename: string, index: number) {
+    constructor(filename: string, index?: number) {
         this.filename = filename
         this.index = index
         this.message = []
