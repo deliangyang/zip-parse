@@ -1,7 +1,6 @@
-import * as Excel from 'exceljs'
-import {Worksheet} from "exceljs";
-import {rejects} from "assert";
-
+import * as XLSX from 'xlsx';
+import {WorkSheet} from "xlsx";
+const { read, write, utils } = XLSX;
 
 interface Item {
     name: string
@@ -12,8 +11,7 @@ interface SheetMap {
     [key: string]: Item
 }
 
-let sheetsMap: SheetMap = null
-sheetsMap = {
+let sheetsMap: SheetMap = {
     items: {
         name: "【仅开发用】服物品配置",
         map: [
@@ -93,63 +91,60 @@ export interface Hash {
 
 export class ExcelToJson {
 
-    parse(filename: string) {
-        let workbook = new Excel.Workbook()
+    parse(data: any) {
 
         let self = this
         return new Promise((resolve, rejects) => {
-            workbook.xlsx.readFile(filename)
-                .then(function(worksheets) {
-                    let json: Hash = {}
-                    for (const key in sheetsMap) {
-                        let worksheet = worksheets.getWorksheet(sheetsMap[key].name)
-                        json[key] = self.trace(sheetsMap[key].map, worksheet)
-                    }
-                    resolve(json)
-                }).catch(e => {
-                    rejects(e)
-            });
+            try {
+                let workbook = XLSX.read(data, {type:"array"})
+                let json: Hash = {}
+                for (const key in sheetsMap) {
+                    let worksheet = workbook.Sheets[sheetsMap[key].name]
+                    json[key] = self.trace(sheetsMap[key].map, worksheet)
+                }
+                resolve(json)
+            } catch (e) {
+                rejects(e)
+            }
         })
-
     }
 
-    trace(map: Array<string>, worksheet: Worksheet) {
-        let row = worksheet.rowCount
-        let result: Array<Item> = []
-        for (let i = 3; i <= row; i++) {
-            let item: any = {}
-            let flag = true;
-            let tmp: any = null
-            for (let j = 1; j <= map.length; j++) {
-                let keys = map[j - 1].split('.');
-                tmp = worksheet.getRow(i).getCell(j).value
-
-                if (map[j - 1] == 'level' && tmp && typeof tmp == 'object') {
-                    tmp = tmp.richText[0].text
+    trace(map: Array<string>, worksheet: WorkSheet) {
+        let data = utils.sheet_to_json(worksheet)
+        let count = 0;
+        let result: Array<any> = []
+        data.forEach((element: any) => {
+            if (count <= 0) {
+                count++
+                return false;
+            }
+            let item: Array<any> = []
+            for (let elementKey in element) {
+                item.push(element[elementKey])
+            }
+            let datum: Hash = {}
+            let _keys: Array<string> = []
+            for (let j = 0; j <= map.length; j++) {
+                if (!map[j]) {
+                    continue
                 }
-
-                if (keys.length > 1) {
-                    if (!item[keys[0]]) {
-                        item[keys[0]] = {}
+                _keys = map[j].split('.')
+                if (_keys.length >= 2) {
+                    if (!datum.hasOwnProperty(_keys[0])) {
+                        datum[_keys[0]] = {}
                     }
-                    item[keys[0]][keys[1]] = this.filter(map[j - 1], tmp)
+                    datum[_keys[0]][_keys[1]] = this.filter(map[j], item[j])
                 } else {
-                    item[map[j - 1]] = this.filter(map[j - 1], tmp)
+                    datum[map[j]] = this.filter(map[j], item[j])
                 }
+            }
+            result.push(datum)
+        })
 
-                if (!worksheet.getRow(i).getCell(1).value) {
-                    flag = false
-                    break
-                }
-            }
-            if (flag) {
-                result.push(item)
-            }
-        }
         return result
     }
 
-    filter(filed: string, value: any) {
+    private filter(filed: string, value: any) {
         if (filed === 'onlineTime') {
             let date = new Date(value)
             return parseInt('' + date.getTime() / 1000);
@@ -168,6 +163,6 @@ export class ExcelToJson {
                 return 2;
             }
         }
-        return value;
+        return value || null;
     }
 }

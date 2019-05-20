@@ -1,12 +1,7 @@
-import * as Excel from 'exceljs'
 
 import * as chai from 'chai';
-import {rejects} from "assert";
-import {Cell, CellRichTextValue, CellValue, RichText} from "exceljs";
-import * as _ from 'lodash'
 import {Material, MaterialValidator} from "./validator/material";
 import {ExcelToJson, Hash} from "./excel2json";
-import {Verify} from "./verify";
 import {CategoryItem, CategoryValidator} from "./validator/category";
 import {ErrorInfo, Validator} from "./validator";
 import * as JSZip from "jszip";
@@ -14,8 +9,6 @@ import * as fs from "fs";
 import {Layer, LayerValidator} from "./validator/layer";
 import {Box, BoxValidator} from "./validator/box";
 import {BoxConfig, BoxConfigValidator} from "./validator/box-config";
-
-const expect = chai.expect;
 
 describe('Layer Test', () => {
 
@@ -38,7 +31,7 @@ describe('Layer Test', () => {
                         Validator.setFiles(files)
 
                         let excel2Json = new ExcelToJson()
-                        excel2Json.parse('xx.xlsx').then((items: Hash) => {
+                        excel2Json.parse('config.xlsx').then((items: Hash) => {
                             let errorInfo: ErrorInfo = null;
                             errorInfo = new ErrorInfo('categories');
                             items['categories'].forEach((element: CategoryItem) => {

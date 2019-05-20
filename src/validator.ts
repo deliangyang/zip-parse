@@ -41,7 +41,7 @@ export abstract class Validator {
                 flag = true
             }
         } else {
-            if (data.length <= 0) {
+            if (!data || data.length <= 0) {
                 flag = true
             }
         }

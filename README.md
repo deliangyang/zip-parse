@@ -10,13 +10,18 @@ npm run dev
 ```js
 $("#file").on("change", function(evt) {
     var files = evt.target.files;
-    ZipParse(files[0]).then(function(data) {
-        $('.error').html('')
-        data.forEach(function(element, index) {
-            $('.error').append(++index + ":\t" + element + "<br />")
+    $('.error').html('请等待，正在检测......')
+
+    require(['./bundle'], function(module) {
+        let parser = new module.DressUp.Parser();
+        parser.setDebug(true)
+        parser.unzip(files[0], 'config.xlsx').then(function(data) {
+            console.log(data)
+
+            parser.package(files[0], 'config.json', JSON.stringify(data['json'])).then(function(formData) {
+                console.log(formData)
+            })
         })
-    }).catch(function(e) {
-        console.log(e)
     })
 })
 ```
