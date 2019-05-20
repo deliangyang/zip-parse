@@ -18,7 +18,8 @@ $("#file").on("change", function(evt) {
         parser.unzip(files[0], 'config.xlsx').then(function(data) {
             console.log(data)
 
-            parser.package(files[0], 'config.json', JSON.stringify(data['json'])).then(function(formData) {
+            let content = JSON.stringify(data['json'])
+            parser.package(files[0], 'config.json', content).then(function(formData) {
                 console.log(formData)
             })
         })
