@@ -1,5 +1,3 @@
-
-import * as chai from 'chai';
 import {Material, MaterialValidator} from "./validator/material";
 import {ExcelToJson, Hash} from "./excel2json";
 import {CategoryItem, CategoryValidator} from "./validator/category";
@@ -12,7 +10,7 @@ import {BoxConfig, BoxConfigValidator} from "./validator/box-config";
 
 describe('Layer Test', () => {
 
-    it('layer content parse', () => {/**/
+    it('layer content parse', () => {
 
         function run(filename: string) {
             return new Promise((resolve, rejects) => {

@@ -27,7 +27,8 @@ export class Parser {
         let self = this
         return new Promise((resolve, rejects) => {
             JSZip.loadAsync(data).then(function (zip) {
-                zip.remove(filename)
+                // 移除原始的excel文件
+                zip.remove('config.xlsx')
                 zip.file(filename, content)
                 zip.generateAsync({type : "uint8array"}).then(value => {
                     if (self.debug) {
