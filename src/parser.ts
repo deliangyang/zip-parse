@@ -1,5 +1,5 @@
 import * as JSZip from "jszip";
-import {ErrorInfo, Validator} from "./validator";
+import {Datum, ErrorInfo, Validator} from "./validator";
 import {ExcelToJson, Hash} from "./excel2json";
 import {CategoryItem, CategoryValidator} from "./validator/category";
 import {Layer, LayerValidator} from "./validator/layer";
@@ -44,6 +44,19 @@ export class Parser {
         })
     }
 
+    protected validate<T extends Validator>(
+        key: string, data: Hash, validate: T) {
+
+        let errorInfo = new ErrorInfo(key)
+        data[key].forEach((element: any) => {
+            validate.validate(element, errorInfo)
+        })
+        if (this.debug) {
+            console.log(key, data[key], errorInfo.trace())
+        }
+        return errorInfo.trace()
+    }
+
     /**
      * 解压且校验文本的正确性
      *
@@ -52,6 +65,8 @@ export class Parser {
      * @return Promise({json: '', result: []})
      */
     public unzip(data: any, filename: string) {
+
+        let self = this
         return new Promise((resolve, rejects) => {
             JSZip.loadAsync(data).then(function (zip) {
                 let result: Array<string> = []
@@ -68,42 +83,15 @@ export class Parser {
                 zip.file(filename).async('array').then(function(data) {
                     console.log(data)
                     excel2Json.parse(data).then((items: Hash) => {
-                        let errorInfo: ErrorInfo = null;
-                        errorInfo = new ErrorInfo('categories');
-                        console.log(items)
-                        items['categories'].forEach((element: CategoryItem) => {
-                            let category = new CategoryValidator(zip)
-                            category.validate(element, errorInfo)
-                        })
-                        result.push(...errorInfo.trace())
 
-                        errorInfo = new ErrorInfo('layers');
-                        items['layers'].forEach((element: Layer) => {
-                            let category = new LayerValidator(zip)
-                            category.validate(element, errorInfo)
-                        })
-                        result.push(...errorInfo.trace())
+                        result.push(
+                            ...self.validate('categories', items, new CategoryValidator(zip)),
+                            ...self.validate('layers', items, new LayerValidator(zip)),
+                            ...self.validate('items', items, new MaterialValidator(zip)),
+                            ...self.validate('boxes', items, new BoxConfigValidator(zip)),
+                            ...self.validate('boxItems', items, new BoxValidator(zip))
+                        )
 
-                        errorInfo = new ErrorInfo('items');
-                        items['items'].forEach((element: Material) => {
-                            let category = new MaterialValidator(zip)
-                            category.validate(element, errorInfo)
-                        })
-                        result.push(...errorInfo.trace())
-
-                        errorInfo = new ErrorInfo('boxes');
-                        items['boxes'].forEach((element: BoxConfig) => {
-                            let category = new BoxConfigValidator(zip)
-                            category.validate(element, errorInfo)
-                        })
-                        result.push(...errorInfo.trace())
-
-                        errorInfo = new ErrorInfo('boxItems');
-                        items['boxItems'].forEach((element: Box) => {
-                            let category = new BoxValidator(zip)
-                            category.validate(element, errorInfo)
-                        })
-                        result.push(...errorInfo.trace())
                         resolve({
                             json: items,
                             result: result,
