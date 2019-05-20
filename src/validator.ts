@@ -1,9 +1,7 @@
 import * as _ from "lodash";
 import * as JSZip from "jszip";
 
-export class Datum {
-
-}
+export class Datum {}
 
 export interface I18N {
     cn: string
@@ -134,9 +132,4 @@ export class ErrorInfo {
         })
         return traces
     }
-}
-
-export class GlobalConfig {
-    static boxConfig: Array<number> = []
-    static itemsConfig: Array<number> = []
 }
