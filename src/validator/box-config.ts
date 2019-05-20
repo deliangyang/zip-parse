@@ -13,12 +13,6 @@ interface Cover {
     normal: string,
 }
 
-interface CoverSize {
-    female: number
-    male: number,
-    normal: number,
-}
-
 export interface BoxConfig extends Datum {
     weight: number
     id: number
@@ -27,7 +21,6 @@ export interface BoxConfig extends Datum {
     cover: Cover
     freeCd: number | string
     onlineTime: number | string
- //   coverSize: CoverSize
 }
 
 export class BoxConfigValidator extends Validator {

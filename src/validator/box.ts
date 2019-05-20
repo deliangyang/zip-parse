@@ -1,11 +1,11 @@
-import {Datum, ErrorInfo, GlobalConfig, Validator} from "../validator";
+import {Datum, ErrorInfo, Validator} from "../validator";
 import * as _ from 'lodash'
-import {BoxConfig, BoxConfigValidator} from "./box-config";
+import {BoxConfigValidator} from "./box-config";
 import {MaterialValidator} from "./material";
 
 export interface Box extends Datum {
     itemId: number
-    // drawFactors: number
+    drawFactors: number
     boxId: number
 }
 
@@ -54,11 +54,11 @@ export class BoxValidator extends Validator {
             })
         }
 
-        // if (box.drawFactors <= 0) {
-        //     errorInfo.message.push({
-        //         index: index,
-        //         message: "抽取因子不能为空"
-        //     })
-        // }
+        if (box.drawFactors <= 0) {
+            errorInfo.message.push({
+                index: index,
+                message: "抽取因子不能为空"
+            })
+        }
     }
 }

@@ -1,7 +1,5 @@
-import {CategoryItem} from "./validator/category";
 import * as _ from "lodash";
 import * as JSZip from "jszip";
-
 
 export class Datum {
 
@@ -20,8 +18,6 @@ export abstract class Validator {
     abstract validate(datum: Datum, errorInfo: ErrorInfo): void
 
     protected static files: Array<string> = []
-
-    errorInfo: ErrorInfo
 
     zip: JSZip
 
@@ -100,7 +96,6 @@ export abstract class Validator {
                 message: name + ":" + filename + ", 不存在无法计算大小"
             })
         }
-
     }
 }
 

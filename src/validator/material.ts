@@ -14,13 +14,6 @@ interface Slice {
     down: string
 }
 
-interface ImageSize {
-    thumb: number
-    original: number
-    up: number
-    down: number
-}
-
 export interface Material extends Datum {
     weight: number
     id: number
@@ -30,7 +23,6 @@ export interface Material extends Datum {
     layerId: number
     level: string
     image: Image,
-    //imageSize: ImageSize
     slice: Slice
     obtain: I18N
     link: string
@@ -56,7 +48,6 @@ export class MaterialValidator extends Validator {
     constructor(zip: JSZip) {
         super(zip);
     }
-
 
     validate(material: Material, errorInfo: ErrorInfo): void {
         let index = ++MaterialValidator.index

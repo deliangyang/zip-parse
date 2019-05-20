@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import {WorkSheet} from "xlsx";
-const { read, write, utils } = XLSX;
+
+const { utils } = XLSX;
 
 interface Item {
     name: string

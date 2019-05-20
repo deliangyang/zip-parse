@@ -1,7 +1,6 @@
 import {ExcelToJson} from "./excel2json";
 import * as fs from 'fs'
 
-
 describe('Layer Test', () => {
 
     it('layer content parse', () => {
@@ -12,7 +11,5 @@ describe('Layer Test', () => {
                 console.log(JSON.stringify(data))
             })
         })
-
-
     });
 });
