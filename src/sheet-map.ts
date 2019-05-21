@@ -9,7 +9,7 @@ interface SheetMap {
 
 export let sheetsMap: SheetMap = {
     items: {
-        name: "【仅开发用】服物品配置",
+        name: '【仅开发用】服物品配置',
         map: [
             'weight',
             'id',
@@ -35,7 +35,7 @@ export let sheetsMap: SheetMap = {
         ],
     },
     categories: {
-        name: "类别配置",
+        name: '类别配置',
         map: [
             'id',
             'name.tw',
@@ -47,7 +47,7 @@ export let sheetsMap: SheetMap = {
         ]
     },
     boxes: {
-        name: "【仅开发用】礼盒配置",
+        name: '【仅开发用】礼盒配置',
         map: [
             'weight',
             'id',
@@ -64,14 +64,14 @@ export let sheetsMap: SheetMap = {
         ]
     },
     boxItems: {
-        name: "【仅开发用】礼盒详情配置",
+        name: '【仅开发用】礼盒详情配置',
         map: [
             'boxId',
             'itemId',
         ]
     },
     layers: {
-        name: "层级配置",
+        name: '层级配置',
         map: [
             'id',
             'categoryId',
@@ -79,5 +79,19 @@ export let sheetsMap: SheetMap = {
             'layer.down',
         ]
     },
+    effect: {
+        name: '上麦动效配置',
+        map: [
+            'weight',
+            'id',
+            'name.cn',
+            'name.tw',
+            'name.hk',
+            'obtain.cn',
+            'obtain.tw',
+            'obtain.hk',
+            'image'
+        ]
+    }
 }
 

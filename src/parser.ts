@@ -1,16 +1,23 @@
 import * as JSZip from "jszip";
-import {Datum, ErrorInfo, Validator} from "./validator";
+import {Validator} from "./validator";
 import {ExcelToJson, Hash} from "./excel2json";
-import {CategoryItem, CategoryValidator} from "./validator/category";
-import {Layer, LayerValidator} from "./validator/layer";
-import {Material, MaterialValidator} from "./validator/material";
-import {BoxConfig, BoxConfigValidator} from "./validator/box-config";
-import {Box, BoxValidator} from "./validator/box";
+import {CategoryValidator} from "./validator/category";
+import {LayerValidator} from "./validator/layer";
+import {MaterialValidator} from "./validator/material";
+import {BoxConfigValidator} from "./validator/box-config";
+import {BoxValidator} from "./validator/box";
+import {Message} from "./message";
+import {EffectValidator} from "./validator/effect";
 
 export class Parser {
 
     debug: boolean = false
 
+    /**
+     * 设置debug模式
+     *
+     * @param debug
+     */
     public setDebug(debug: boolean) {
         this.debug = debug
     }
@@ -18,25 +25,24 @@ export class Parser {
     /**
      * 打包上传
      *
-     * @param data
-     * @param filename
-     * @param content
+     * @param data any
+     * @param filename string
+     * @param content string
+     * @param removeFiles Array<string>
      * @return Promise(FormData)
      */
-    public package(data: any, filename: string, content: string) {
-        let self = this
+    public package(data: any, filename: string, content: string, removeFiles: Array<string>) {
         return new Promise((resolve, rejects) => {
             JSZip.loadAsync(data).then(function (zip) {
-                // 移除原始的excel文件
-                zip.remove('config.xlsx')
+                removeFiles.forEach(_filename => {
+                    zip.remove(_filename)
+                })
                 zip.file(filename, content)
                 zip.generateAsync({type : "uint8array"}).then(value => {
-                    if (self.debug) {
-                        console.log(value)
-                    }
-                    var formdata = new FormData();
-                    formdata.append('file', new File([value], 'config.zip'))
-                    resolve(formdata)
+                    let formData = new FormData()
+                    let file = new File([value], 'config.zip')
+                    formData.append('file', file)
+                    resolve(formData)
                 })
             }).catch(e => {
                 rejects(e)
@@ -44,17 +50,25 @@ export class Parser {
         })
     }
 
-    protected validate<T extends Validator>(
-        key: string, data: Hash, validate: T) {
+    /**
+     * 校验
+     *
+     * @param key
+     * @param data
+     * @param validate
+     */
+    protected validate(key: string, data: Hash, validate: Validator) {
+        let result: Array<string> = []
 
-        let errorInfo = new ErrorInfo(key)
+        let error:string = ''
         data[key].forEach((element: any) => {
-            validate.validate(element, errorInfo)
+            validate.validate(element).forEach(item => {
+                error = Message.parse(key, item.index, item.message)
+                result.push(error)
+            })
         })
-        if (this.debug) {
-            console.log(key, data[key], errorInfo.trace())
-        }
-        return errorInfo.trace()
+
+        return result
     }
 
     /**
@@ -65,31 +79,22 @@ export class Parser {
      * @return Promise({json: '', result: []})
      */
     public unzip(data: any, filename: string) {
-
         let self = this
         return new Promise((resolve, rejects) => {
             JSZip.loadAsync(data).then(function (zip) {
                 let result: Array<string> = []
-                let files: Array<string> = []
-                let name: string
-                zip.forEach((relativePath, zipEntry) => {
-                    name = zipEntry.name.split('/').pop()
-                        .replace(/\.png/, '')
-                    files.push(name)
-                })
-                Validator.setFiles(files)
+                self.fileContainer(zip)
 
-                let excel2Json = new ExcelToJson()
                 zip.file(filename).async('array').then(function(data) {
-                    console.log(data)
+                    let excel2Json = new ExcelToJson()
                     excel2Json.parse(data).then((items: Hash) => {
-
                         result.push(
+                            ...self.validate('effect', items, new EffectValidator(zip)),
                             ...self.validate('categories', items, new CategoryValidator(zip)),
                             ...self.validate('layers', items, new LayerValidator(zip)),
                             ...self.validate('items', items, new MaterialValidator(zip)),
                             ...self.validate('boxes', items, new BoxConfigValidator(zip)),
-                            ...self.validate('boxItems', items, new BoxValidator(zip))
+                            ...self.validate('boxItems', items, new BoxValidator(zip)),
                         )
 
                         resolve({
@@ -98,11 +103,21 @@ export class Parser {
                         })
                     }).catch(e => {
                         rejects(e)
-                    });
+                    })
                 })
-
             })
         })
     }
 
+    protected fileContainer(zip: JSZip) {
+        let files: Array<string> = []
+        let name: string
+        zip.forEach((relativePath, zipEntry) => {
+            name = zipEntry.name.split('/').pop()
+                .replace(/\.png/, '')
+            files.push(name)
+        })
+
+        Validator.setFiles(files)
+    }
 }
