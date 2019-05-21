@@ -22,12 +22,9 @@ export class LayerValidator extends Validator {
     validate(layer: Layer): Array<Message> {
 
         LayerValidator.idSet.push(layer.id)
-        if (layer.id <= 0) {
-            this.errMessage("层级ID不能为空")
-        }
-        if (!layer.categoryId || layer.categoryId.length <= 0) {
-            this.errMessage("类别不能为空")
-        }
+        this.checkEmpty('层级ID', layer.id)
+        this.checkEmpty('类别', layer.categoryId)
+
         if (layer.layer.up && layer.layer.up < 0) {
             this.errMessage("上层级数不能为负数")
         }
@@ -36,18 +33,10 @@ export class LayerValidator extends Validator {
         }
 
         if (layer.layer.down) {
-            if (!_.includes(LayerValidator.layerDownSet, layer.layer.down)) {
-                LayerValidator.layerDownSet.push(layer.layer.down)
-            } else {
-                this.errMessage("上层级数不能重复")
-            }
+            this.notRepeat('下层级数', layer.layer.down, LayerValidator.layerDownSet)
         }
         if (layer.layer.up) {
-            if (!_.includes(LayerValidator.layerUpSet, layer.layer.up)) {
-                LayerValidator.layerUpSet.push(layer.layer.up)
-            } else {
-                this.errMessage("上层级数不能重复")
-            }
+            this.notRepeat('上层级数', layer.layer.up, LayerValidator.layerUpSet)
         }
         return this.container
     }

@@ -30,16 +30,8 @@ export class CategoryValidator extends Validator {
     gender: Array<number> = [1, 2]
 
     validate(categoryItem: CategoryItem): Array<Message> {
-        if (categoryItem.id <= 0) {
-            this.errMessage("类别ID不能为空");
-        }
-
-        if (_.includes(CategoryValidator.idSet, categoryItem.id)) {
-            this.errMessage("类别ID不能重复");
-        } else {
-            CategoryValidator.idSet.push(categoryItem.id)
-        }
-
+        this.checkEmpty('类别ID', categoryItem.id)
+        this.notRepeat('类别ID', categoryItem.id, CategoryValidator.idSet)
         this.validateCategory('服装类别(简体中文)', categoryItem.name.cn, CategoryValidator.categorySet)
         this.validateCategory('服装类别(台湾繁体)', categoryItem.name.tw, CategoryValidator.categoryTwSet)
         this.validateCategory('服装类别(香港繁体)', categoryItem.name.hk, CategoryValidator.categoryHkSet)
@@ -58,16 +50,8 @@ export class CategoryValidator extends Validator {
     }
 
     private validateCategory(name: string, category: string, set: Array<string>) {
-        if (category.length <= 0) {
-            this.errMessage(name + "不能为空")
-        }
-
-        if (_.includes(set, category)) {
-            this.errMessage(name + "不能重复")
-        } else {
-            set.push(category)
-        }
-
+        this.checkEmpty(name, category)
+        this.notRepeat(name, category, set)
         if (category.length > 20) {
             this.errMessage(name + "长度检测（不能超过20个字）")
         }

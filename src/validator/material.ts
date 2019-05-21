@@ -36,7 +36,8 @@ export interface Material extends Datum {
     type: number
     number: number
     refItemId: number
-    coordinate: Coordinate
+    coordinate: Coordinate,
+    effectId: number,
 }
 
 export class MaterialValidator extends Validator {

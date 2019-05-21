@@ -23,7 +23,9 @@ export let sheetsMap: SheetMap = {
             'image.thumb',
             'image.original',
             'slice.up',
+            'coordinate.up',
             'slice.down',
+            'coordinate.down',
             'obtain.cn',
             'obtain.tw',
             'obtain.hk',
@@ -32,6 +34,7 @@ export let sheetsMap: SheetMap = {
             'type',
             'number',
             'refItemId',
+            'effectId',
         ],
     },
     categories: {
@@ -61,6 +64,7 @@ export let sheetsMap: SheetMap = {
             'cover.normal',
             'freeCd',
             'onlineTime',
+            'effectId',
         ]
     },
     boxItems: {
