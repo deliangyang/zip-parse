@@ -21,9 +21,9 @@ export abstract class Validator {
 
     protected static index: number = 0;
 
-    zip: JSZip
+    protected zip: JSZip
 
-    container: Array<Message>
+    protected container: Array<Message>
 
     constructor(zip?: JSZip) {
         this.zip = zip
@@ -42,6 +42,14 @@ export abstract class Validator {
         Validator.files = files
     }
 
+    /**
+     * 校验是否为空
+     *
+     * @param name
+     * @param data
+     * @param ngt
+     * @param nlt
+     */
     protected checkEmpty(name: string, data: any, ngt?: number | null, nlt?: number | null) {
         let flag = false;
         if (typeof data === 'number') {
@@ -66,14 +74,15 @@ export abstract class Validator {
         }
     }
 
+    /**
+     * 验证文件
+     *
+     * @param name
+     * @param filename
+     */
     protected validateFile(name: string, filename: string) {
-        if (filename.length <= 0) {
-            this.errMessage(name + "不能为空")
-        }
-
-        if (!_.includes(Validator.files, filename)) {
-            this.errMessage(name + "文件必须存在:" + filename)
-        }
+        this.checkEmpty(name, filename)
+        this.checkExist(name + '文件', filename, Validator.files)
 
         let _filename = 'abc/images/' + filename + '.png'
         let file = this.zip.file(_filename)
@@ -89,6 +98,13 @@ export abstract class Validator {
         }
     }
 
+    /**
+     * 检查某个元素是否在集合内不存在
+     *
+     * @param name
+     * @param data
+     * @param set
+     */
     protected notRepeat<T>(name: string, data: T, set: Array<T>) {
         if (_.includes(set, data)) {
             this.errMessage(name + "不能重复")
@@ -97,6 +113,13 @@ export abstract class Validator {
         }
     }
 
+    /**
+     * 检查元素是否存在某个集合内
+     *
+     * @param name
+     * @param value
+     * @param set
+     */
     protected checkExist<T>(name: string, value: T, set: Array<T>) {
         if (!_.includes(set, value)) {
             this.errMessage(name + '不存在')
