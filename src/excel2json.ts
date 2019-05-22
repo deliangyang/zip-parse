@@ -19,6 +19,9 @@ export class ExcelToJson {
                 let json: Hash = {}
                 for (const key in sheetsMap) {
                     let worksheet = workbook.Sheets[sheetsMap[key].name]
+                    if (!workbook.Sheets.hasOwnProperty(sheetsMap[key].name)) {
+                        throw Error('缺少配置' + key + ', ' + sheetsMap[key].name)
+                    }
                     json[key] = self.trace(sheetsMap[key].map, worksheet)
                 }
                 resolve(json)

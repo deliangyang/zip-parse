@@ -85,6 +85,8 @@ export class Parser {
                 let result: Array<string> = []
                 self.fileContainer(zip)
 
+                self.checkFiles(zip, filename, 'images')
+
                 zip.file(filename).async('array').then(function(data) {
                     let excel2Json = new ExcelToJson()
                     excel2Json.parse(data).then((items: Hash) => {
@@ -107,6 +109,24 @@ export class Parser {
                 })
             })
         })
+    }
+
+    /**
+     * 检查目录和文件是否存在
+     *
+     * @param zip
+     * @param filename
+     * @param folder
+     */
+    protected checkFiles(zip: JSZip, filename: string, folder?: string)
+    {
+        if (folder && !zip.folder(folder)) {
+            throw Error(`目录${folder}不存在`)
+        }
+
+        if (!zip.file(filename)) {
+            throw Error(`Excel ${filename} 不存在`)
+        }
     }
 
     protected fileContainer(zip: JSZip) {
