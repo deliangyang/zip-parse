@@ -20,6 +20,7 @@ export class LayerValidator extends Validator {
     static idSet: Array<number> = []
 
     validate(layer: Layer): Array<Message> {
+        ++Validator.currentId
 
         LayerValidator.idSet.push(layer.id)
         this.checkEmpty('层级ID', layer.id)

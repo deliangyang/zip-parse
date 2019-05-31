@@ -57,6 +57,7 @@ export class MaterialValidator extends Validator {
     }
 
     validate(material: Material): Array<Message> {
+        ++Validator.currentId
 
         this.checkEmpty('物品ID', material.id)
         this.checkEmpty('获取方式(简体中文)', material.obtain.cn, 20)
@@ -68,10 +69,10 @@ export class MaterialValidator extends Validator {
         this.checkEmpty('层级ID', material.layerId)
         this.checkEmpty('等级', material.level)
         this.checkEmpty('缩略图', material.image.thumb)
-        this.checkEmpty('预览图', material.image.original)
+        // this.checkEmpty('预览图', material.image.original)
         this.checkEmpty('上层切片', material.slice.up)
         this.checkEmpty('物品类型', material.type)
-        this.checkEmpty('上层切片坐标', material.coordinate.down)
+        this.checkEmpty('上层切片坐标', material.coordinate.up)
 
         this.checkEmpty('物品名称(简体中文)', material.name.cn, 20)
         this.checkEmpty('物品名称(台湾繁体)', material.name.tw, 20)
@@ -83,15 +84,15 @@ export class MaterialValidator extends Validator {
         this.notRepeat('物品名称(香港繁体)', material.name.hk, MaterialValidator.nameHkSet)
 
         this.validateFile('缩略图', material.image.thumb)
-        this.validateFile('预览图', material.image.original)
+        // this.validateFile('预览图', material.image.original)
         this.validateFile('上层切片', material.slice.up)
 
         if (material.slice.down) {
             this.validateFile("下层切片", material.slice.down)
         }
 
-        if (material.onlineTime && (!/^\d{10}$/.test('' + material.onlineTime)
-            || !/^\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{2}:\d{2}(\d{2})?$/)) {
+        if (material.onlineTime > 0 && (!/^\d{10}$/.test('' + material.onlineTime))) {
+            console.log(material.onlineTime)
             this.errMessage('时间格式不正确（时间戳或字符串）')
         }
 

@@ -26,7 +26,8 @@
     "prod": "webpack -p",
     "watch": "webpack --watch",
     "clean": "rm -rf src/**/*.js && rm -rf src/**/*.js.map && rm -rf src/*.js && rm -rf src/*.js.map && rm -rf src/**/*.d.ts",
-    "release": "cp -rf dist/bundle.js D:\\\\work\\\\party-api\\\\public\\\\admin\\\\js\\\\dress_up_parser.js"
+    "release": "cp -rf dist/bundle.js D:\\\\work\\\\party-api\\\\public\\\\admin\\\\js\\\\dress_up_parser.js",
+    "go": "npm run prod && npm run release"
   },
   "author": "",
   "license": "ISC"

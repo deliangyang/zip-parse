@@ -13,6 +13,7 @@ export class Parser {
 
     debug: boolean = false
 
+    private result: Array<string> = []
     /**
      * 设置debug模式
      *
@@ -29,7 +30,7 @@ export class Parser {
      * @param filename string
      * @param content string
      * @param removeFiles Array<string>
-     * @return Promise(FormData)
+     * @return Promise(File)
      */
     public package(data: any, filename: string, content: string, removeFiles: Array<string>) {
         return new Promise((resolve, rejects) => {
@@ -39,10 +40,8 @@ export class Parser {
                 })
                 zip.file(filename, content)
                 zip.generateAsync({type : "uint8array"}).then(value => {
-                    let formData = new FormData()
                     let file = new File([value], 'config.zip')
-                    formData.append('file', file)
-                    resolve(formData)
+                    resolve(file)
                 })
             }).catch(e => {
                 rejects(e)
@@ -58,17 +57,16 @@ export class Parser {
      * @param validate
      */
     protected validate(key: string, data: Hash, validate: Validator) {
-        let result: Array<string> = []
-
         let error:string = ''
+
         data[key].forEach((element: any) => {
-            validate.validate(element).forEach(item => {
-                error = Message.parse(key, item.index, item.message)
-                result.push(error)
-            })
+            validate.validate(element)
         })
 
-        return result
+        validate.getErrors().forEach(item => {
+            error = Message.parse(key, item.index, item.message)
+            this.result.push(error)
+        })
     }
 
     /**
@@ -82,31 +80,35 @@ export class Parser {
         let self = this
         return new Promise((resolve, rejects) => {
             JSZip.loadAsync(data).then(function (zip) {
-                let result: Array<string> = []
                 self.fileContainer(zip)
 
-                self.checkFiles(zip, filename, 'images')
+                try {
+                    self.checkFiles(zip, filename, 'images')
+                } catch (e) {
+                    return rejects(e)
+                }
 
                 zip.file(filename).async('array').then(function(data) {
                     let excel2Json = new ExcelToJson()
                     excel2Json.parse(data).then((items: Hash) => {
-                        result.push(
-                            ...self.validate('effect', items, new EffectValidator(zip)),
-                            ...self.validate('categories', items, new CategoryValidator(zip)),
-                            ...self.validate('layers', items, new LayerValidator(zip)),
-                            ...self.validate('items', items, new MaterialValidator(zip)),
-                            ...self.validate('boxes', items, new BoxConfigValidator(zip)),
-                            ...self.validate('boxItems', items, new BoxValidator(zip)),
-                        )
+                        self.result = []
+                        self.validate('effect', items, new EffectValidator(zip))
+                        self.validate('categories', items, new CategoryValidator(zip))
+                        self.validate('layers', items, new LayerValidator(zip))
+                        self.validate('items', items, new MaterialValidator(zip))
+                        self.validate('boxes', items, new BoxConfigValidator(zip))
+                        self.validate('boxItems', items, new BoxValidator(zip))
 
                         resolve({
                             json: items,
-                            result: result,
+                            result: self.result,
                         })
                     }).catch(e => {
                         rejects(e)
                     })
                 })
+            }).catch(e => {
+                rejects(e)
             })
         })
     }
@@ -120,12 +122,8 @@ export class Parser {
      */
     protected checkFiles(zip: JSZip, filename: string, folder?: string)
     {
-        if (folder && !zip.folder(folder)) {
-            throw Error(`目录${folder}不存在`)
-        }
-
         if (!zip.file(filename)) {
-            throw Error(`Excel ${filename} 不存在`)
+            throw new Error(`Excel ${filename} 不存在`)
         }
     }
 

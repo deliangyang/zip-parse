@@ -9,7 +9,7 @@ interface SheetMap {
 
 export let sheetsMap: SheetMap = {
     items: {
-        name: '【仅开发用】服物品配置',
+        name: '【仅开发用】物品配置',
         map: [
             'weight',
             'id',
@@ -21,7 +21,7 @@ export let sheetsMap: SheetMap = {
             'layerId',
             'level',
             'image.thumb',
-            'image.original',
+           // 'image.original',
             'slice.up',
             'coordinate.up',
             'slice.down',
@@ -72,6 +72,7 @@ export let sheetsMap: SheetMap = {
         map: [
             'boxId',
             'itemId',
+            'drawFactors',
         ]
     },
     layers: {

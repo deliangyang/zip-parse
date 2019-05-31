@@ -1,5 +1,4 @@
 import {Datum, I18N, Validator} from "../validator";
-import * as JSZip from "jszip";
 import {Message} from "../message";
 import {EffectValidator} from "./effect";
 
@@ -33,6 +32,8 @@ export class BoxConfigValidator extends Validator {
     static boxNameHkSet: Array<string> = []
 
     validate(boxConfig: BoxConfig): Array<Message> {
+        ++Validator.currentId
+
         this.checkEmpty('权重', boxConfig.weight)
         this.checkEmpty('礼盒ID', boxConfig.id)
         this.checkEmpty('礼盒名称(简体中文)', boxConfig.name.cn, 20)

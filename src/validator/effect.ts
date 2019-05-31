@@ -20,6 +20,8 @@ export class EffectValidator extends Validator {
     static effectHhNameSet: Array<string> = []
 
     validate(effect: Effect): Array<Message> {
+        ++Validator.currentId
+
         this.checkEmpty('动效编号', effect.id)
         this.checkEmpty('名称', effect.name.cn)
         this.checkEmpty('名称(台湾繁体)', effect.name.tw)

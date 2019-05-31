@@ -1,6 +1,5 @@
 import {Datum, I18N, Validator} from "../validator";
 import * as _ from 'lodash'
-import * as JSZip from "jszip";
 import {Message} from "../message";
 
 interface Slice {
@@ -30,6 +29,8 @@ export class CategoryValidator extends Validator {
     gender: Array<number> = [1, 2]
 
     validate(categoryItem: CategoryItem): Array<Message> {
+        ++Validator.currentId
+
         this.checkEmpty('类别ID', categoryItem.id)
         this.notRepeat('类别ID', categoryItem.id, CategoryValidator.idSet)
         this.validateCategory('服装类别(简体中文)', categoryItem.name.cn, CategoryValidator.categorySet)
@@ -51,7 +52,7 @@ export class CategoryValidator extends Validator {
 
     private validateCategory(name: string, category: string, set: Array<string>) {
         this.checkEmpty(name, category)
-        this.notRepeat(name, category, set)
+        // this.notRepeat(name, category, set)
         if (category.length > 20) {
             this.errMessage(name + "长度检测（不能超过20个字）")
         }

@@ -5,8 +5,8 @@ import {Message} from "../message";
 
 export interface Box extends Datum {
     itemId: number
-    drawFactors: number
     boxId: number
+    drawFactors: number
 }
 
 export class BoxValidator extends Validator {
@@ -19,8 +19,7 @@ export class BoxValidator extends Validator {
         this.checkEmpty('物品ID', box.itemId)
         this.notRepeat('物品ID', box.itemId, BoxValidator.itemIdSet)
         this.checkExist('物品ID', box.itemId, MaterialValidator.itemIdSet)
-        this.checkEmpty('抽取因子', box.drawFactors)
-
+        // this.checkEmpty('抽取因子' + box.boxId + '#' + box.itemId, box.drawFactors)
         return this.container
     }
 }

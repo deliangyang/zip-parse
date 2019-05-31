@@ -23,10 +23,13 @@ export abstract class Validator {
 
     protected zip: JSZip
 
-    protected container: Array<Message>
+    protected static currentId: number = 2
+
+    protected container: Array<Message> = []
 
     constructor(zip?: JSZip) {
         this.zip = zip
+        ++Validator.currentId
     }
 
     abstract validate(datum: Datum): Array<Message>
@@ -62,7 +65,7 @@ export abstract class Validator {
             }
         }
         if (flag) {
-            this.errMessage(name + '不能为空')
+            this.errMessage(`${name}不能为空, (${name}, ${data})`)
         }
 
         if (ngt && typeof data === 'string' && data.length > ngt) {
@@ -84,7 +87,7 @@ export abstract class Validator {
         this.checkEmpty(name, filename)
         this.checkExist(name + '文件', filename, Validator.files)
 
-        let _filename = 'abc/images/' + filename + '.png'
+        let _filename = 'images/' + filename + '.png'
         let file = this.zip.file(_filename)
         if (file) {
             let size:number|string = JSON.stringify(file)
@@ -124,5 +127,9 @@ export abstract class Validator {
         if (!_.includes(set, value)) {
             this.errMessage(name + '不存在')
         }
+    }
+
+    public getErrors(): Array<Message> {
+        return this.container
     }
 }

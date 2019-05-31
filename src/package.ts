@@ -7,6 +7,5 @@ fs.readFile('abc.zip', (err: any, data: any) => {
     JSZip.loadAsync(data).then(function (zip) {
         zip.remove('abc/config.json')
         zip.file('abc/config.json', '{"xxx": "hello world"}')
-        console.log(zip)
     })
 })

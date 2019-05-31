@@ -32,7 +32,7 @@ export class ExcelToJson {
     }
 
     trace(map: Array<string>, worksheet: WorkSheet) {
-        let data = utils.sheet_to_json(worksheet)
+        let data = utils.sheet_to_json(worksheet, {defval: ''})
         let count = 0;
         let result: Array<any> = []
         data.forEach((element: any) => {
@@ -42,6 +42,9 @@ export class ExcelToJson {
             }
             let item: Array<any> = []
             for (let elementKey in element) {
+                if (elementKey.startsWith('__EMPTY')) {
+                    continue
+                }
                 item.push(element[elementKey])
             }
             let datum: Hash = {}
@@ -62,13 +65,17 @@ export class ExcelToJson {
             }
             result.push(datum)
         })
-        
+
         return result
     }
 
     private filter(filed: string, value: any) {
         if (filed === 'onlineTime') {
-            let date = new Date(value)
+            if (!value) {
+                return 0
+            }
+
+            let date = new Date(1900, 0, value, -1)
             return parseInt('' + date.getTime() / 1000);
         } else if (filed === 'gender') {
             if (value === '男') {
