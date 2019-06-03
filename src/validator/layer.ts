@@ -20,17 +20,17 @@ export class LayerValidator extends Validator {
     static idSet: Array<number> = []
 
     validate(layer: Layer): Array<Message> {
-        ++Validator.currentId
+        this.index++
 
         LayerValidator.idSet.push(layer.id)
         this.checkEmpty('层级ID', layer.id)
         this.checkEmpty('类别', layer.categoryId)
 
         if (layer.layer.up && layer.layer.up < 0) {
-            this.errMessage("上层级数不能为负数")
+            this.errMessage("上层级数 不能为负数")
         }
         if (layer.layer.down && layer.layer.down > 0) {
-            this.errMessage("下层级数不能为正数")
+            this.errMessage("下层级数 不能为正数")
         }
 
         if (layer.layer.down) {

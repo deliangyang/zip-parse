@@ -5,8 +5,9 @@ import {Parser} from "./parser";
 describe('Config.xlsx Test', () => {
 
     it('Config content parse', () => {
+        return false;
         let excel2json = new ExcelToJson()
-        fs.readFile('config2.xlsx', function(err, data) {
+        fs.readFile('config21.xlsx', function(err, data) {
             excel2json.parse(data).then((data) => {
                 console.log(JSON.stringify(data))
             })
@@ -14,14 +15,27 @@ describe('Config.xlsx Test', () => {
     });
 });
 
+describe('interface Test', () => {
+
+    it('Config content parse', () => {
+        fs.readFile('1559544433.zip', function(err, data) {
+            let parser = new Parser()
+            parser.package(data, 'xxx', "a", []).then(res => {
+                console.log(res)
+            })
+        });
+    });
+});
+
 describe('Unzip Test', () => {
 
     it('unzip content parse', () => {
-        fs.readFile('531.zip', function(err, data) {
+        return true;
+        fs.readFile('1559544433.zip', function(err, data) {
             let parser = new Parser()
             parser.unzip(data, 'config.xlsx').then((res: Hash) => {
                 for (let item in res['result']) {
-                    //console.log(res['result'][item])
+                    console.log(res['result'][item])
                 }
             }).catch(e => {
                 console.log(e)

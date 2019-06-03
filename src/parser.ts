@@ -56,7 +56,7 @@ export class Parser {
      * @param data
      * @param validate
      */
-    protected validate(key: string, data: Hash, validate: Validator) {
+    public validate(key: string, data: Hash, validate: Validator) {
         let error:string = ''
 
         data[key].forEach((element: any) => {
@@ -92,15 +92,15 @@ export class Parser {
                     let excel2Json = new ExcelToJson()
                     excel2Json.parse(data).then((items: Hash) => {
                         self.result = []
-                        self.validate('effect', items, new EffectValidator(zip))
-                        self.validate('categories', items, new CategoryValidator(zip))
-                        self.validate('layers', items, new LayerValidator(zip))
-                        self.validate('items', items, new MaterialValidator(zip))
-                        self.validate('boxes', items, new BoxConfigValidator(zip))
-                        self.validate('boxItems', items, new BoxValidator(zip))
+                        self.validate('effect', items['unFormats'], new EffectValidator(zip))
+                        self.validate('categories', items['unFormats'], new CategoryValidator(zip))
+                        self.validate('layers', items['unFormats'], new LayerValidator(zip))
+                        self.validate('items', items['unFormats'], new MaterialValidator(zip))
+                        self.validate('boxes', items['unFormats'], new BoxConfigValidator(zip))
+                        self.validate('boxItems', items['unFormats'], new BoxValidator(zip))
 
                         resolve({
-                            json: items,
+                            json: items['data'],
                             result: self.result,
                         })
                     }).catch(e => {

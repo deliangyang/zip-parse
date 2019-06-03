@@ -14,6 +14,7 @@ export class BoxValidator extends Validator {
     static itemIdSet: Array<number> = []
 
     validate(box: Box): Array<Message> {
+        this.index++
         this.checkEmpty('礼盒ID', box.boxId)
         this.checkExist('礼盒ID', box.boxId, BoxConfigValidator.boxIdSet)
         this.checkEmpty('物品ID', box.itemId)

@@ -29,7 +29,7 @@ export class CategoryValidator extends Validator {
     gender: Array<number> = [1, 2]
 
     validate(categoryItem: CategoryItem): Array<Message> {
-        ++Validator.currentId
+        this.index++
 
         this.checkEmpty('类别ID', categoryItem.id)
         this.notRepeat('类别ID', categoryItem.id, CategoryValidator.idSet)
@@ -38,11 +38,11 @@ export class CategoryValidator extends Validator {
         this.validateCategory('服装类别(香港繁体)', categoryItem.name.hk, CategoryValidator.categoryHkSet)
 
         if (categoryItem.gender <= 0) {
-            this.errMessage("性别不能为空");
+            this.errMessage("性别 不能为空");
         }
 
         if (!_.includes(this.gender, categoryItem.gender)) {
-            this.errMessage("性别只能为男或女");
+            this.errMessage("性别 只能为男或女");
         }
 
         this.validateFile("切片-正常", categoryItem.slice.normal)
@@ -53,8 +53,8 @@ export class CategoryValidator extends Validator {
     private validateCategory(name: string, category: string, set: Array<string>) {
         this.checkEmpty(name, category)
         // this.notRepeat(name, category, set)
-        if (category.length > 20) {
-            this.errMessage(name + "长度检测（不能超过20个字）")
+        if (category && category.length > 20) {
+            this.errMessage(`${name}长度检测（不能超过20个字）`)
         }
     }
 }

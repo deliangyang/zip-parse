@@ -57,8 +57,9 @@ export class MaterialValidator extends Validator {
     }
 
     validate(material: Material): Array<Message> {
-        ++Validator.currentId
+        this.index++
 
+        this.checkEmpty('权重', material.weight)
         this.checkEmpty('物品ID', material.id)
         this.checkEmpty('获取方式(简体中文)', material.obtain.cn, 20)
         this.checkEmpty('获取方式(台湾繁体)', material.obtain.tw, 20)
@@ -91,50 +92,50 @@ export class MaterialValidator extends Validator {
             this.validateFile("下层切片", material.slice.down)
         }
 
-        if (material.onlineTime > 0 && (!/^\d{10}$/.test('' + material.onlineTime))) {
+        if (material.onlineTime && (!/^\d{10}$/.test('' + material.onlineTime))) {
             console.log(material.onlineTime)
-            this.errMessage('时间格式不正确（时间戳或字符串）')
+            this.errMessage(`时间格式不正确 ${material.onlineTime}`)
         }
 
         if (!_.includes(LayerValidator.idSet, material.layerId)) {
-            this.errMessage('层级ID必须在层级配置表存在')
+            this.errMessage('层级ID 必须在层级配置表存在')
         }
 
         if (!_.includes(CategoryValidator.idSet, material.categoryId)) {
-            this.errMessage('类别ID必须在类别配置表存在')
+            this.errMessage('类别ID 必须在类别配置表存在')
         }
 
 
         if (!_.includes(this.gender, material.gender)) {
-            this.errMessage('性别只能为' + this.gender.join('、'))
+            this.errMessage('性别 只能为' + this.gender.join('、'))
         }
 
         if (!_.includes(this.type, material.type)) {
-            this.errMessage('物品类型只能为' + this.type.join('、'))
+            this.errMessage('物品类型 只能为' + this.type.join('、'))
         }
 
         if (material.type === 1) {
             if (!_.includes(this.level, material.level)) {
-                this.errMessage('等级只能为' + this.level.join('、'))
+                this.errMessage('等级 只能为' + this.level.join('、'))
             }
             MaterialValidator.productSet.push(material.id)
         } else {
             if (!_.includes(this.itemLevel, material.level)) {
-                this.errMessage('碎片等级只能为' + this.itemLevel.join('、'))
+                this.errMessage('碎片等级 只能为' + this.itemLevel.join('、'))
             }
 
             if (!material || material.number < 2 || material.number > 100) {
-                this.errMessage('数量区间检测（2个至100个合格）')
+                this.errMessage('数量区间 检测（2个至100个合格）')
             }
 
             if (_.includes(MaterialValidator.refItemIdSet, material.refItemId)) {
-                this.errMessage('碎片关联物品ID不能重复')
+                this.errMessage('碎片关联物品ID 不能重复')
             } else {
                 MaterialValidator.refItemIdSet.push(material.refItemId)
             }
 
             if (!_.includes(MaterialValidator.itemIdSet, material.refItemId)) {
-                this.errMessage('关联物品ID必须存在且是成品')
+                this.errMessage('关联物品ID 必须存在且是成品')
             }
         }
 

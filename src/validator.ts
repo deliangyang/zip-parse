@@ -19,7 +19,7 @@ export abstract class Validator {
 
     protected static files: Array<string> = []
 
-    protected static index: number = 0;
+    protected index: number = 2;
 
     protected zip: JSZip
 
@@ -36,7 +36,7 @@ export abstract class Validator {
 
     protected errMessage(message: string) {
         this.container.push({
-            index: ++Validator.index,
+            index: this.index,
             message: message
         })
     }
@@ -56,7 +56,7 @@ export abstract class Validator {
     protected checkEmpty(name: string, data: any, ngt?: number | null, nlt?: number | null) {
         let flag = false;
         if (typeof data === 'number') {
-            if (data <= 0) {
+            if (data === null) {
                 flag = true
             }
         } else {
@@ -65,15 +65,15 @@ export abstract class Validator {
             }
         }
         if (flag) {
-            this.errMessage(`${name}不能为空, (${name}, ${data})`)
+            this.errMessage(`${name} 不能为空(${name}, ${data})`)
         }
 
         if (ngt && typeof data === 'string' && data.length > ngt) {
-            this.errMessage(name + '长度检测（不能超过20个字）')
+            this.errMessage(`${name} 长度检测（不能超过20个字）`)
         }
 
         if (nlt && typeof data === 'number' && data < nlt) {
-            this.errMessage(name + '需大于或等于1')
+            this.errMessage(`${name} 需大于或等于1`)
         }
     }
 
@@ -85,7 +85,7 @@ export abstract class Validator {
      */
     protected validateFile(name: string, filename: string) {
         this.checkEmpty(name, filename)
-        this.checkExist(name + '文件', filename, Validator.files)
+        this.checkExist(name, filename, Validator.files)
 
         let _filename = 'images/' + filename + '.png'
         let file = this.zip.file(_filename)
@@ -94,10 +94,10 @@ export abstract class Validator {
                 .substr(0, 300)
                 .match(/"uncompressedSize":(\d+)/).pop()
             if (parseInt(size) > Validator.fileSize) {
-                this.errMessage(name + ":" + filename + ", 文件大小超过500k")
+                this.errMessage(`${name} ${filename}文件大小超过500k`)
             }
         } else {
-            this.errMessage(name + ":" + filename + ", 不存在无法计算大小")
+            this.errMessage(`${name} ${filename}不存在无法计算大小`)
         }
     }
 
@@ -110,7 +110,7 @@ export abstract class Validator {
      */
     protected notRepeat<T>(name: string, data: T, set: Array<T>) {
         if (_.includes(set, data)) {
-            this.errMessage(name + "不能重复")
+            this.errMessage(`${name} 不能重复`)
         } else {
             set.push(data)
         }
@@ -125,7 +125,7 @@ export abstract class Validator {
      */
     protected checkExist<T>(name: string, value: T, set: Array<T>) {
         if (!_.includes(set, value)) {
-            this.errMessage(name + '不存在')
+            this.errMessage(`${name} 文件不存在`)
         }
     }
 

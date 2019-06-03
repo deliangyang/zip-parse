@@ -11,27 +11,31 @@ export interface Hash {
 export class ExcelToJson {
 
     parse(data: any) {
-
         let self = this
         return new Promise((resolve, rejects) => {
             try {
                 let workbook = XLSX.read(data, {type:"array"})
                 let json: Hash = {}
+                let unFormats: Hash = {}
                 for (const key in sheetsMap) {
                     let worksheet = workbook.Sheets[sheetsMap[key].name]
                     if (!workbook.Sheets.hasOwnProperty(sheetsMap[key].name)) {
                         throw Error('缺少配置' + key + ', ' + sheetsMap[key].name)
                     }
                     json[key] = self.trace(sheetsMap[key].map, worksheet)
+                    unFormats[key] = self.trace(sheetsMap[key].map, worksheet, false)
                 }
-                resolve(json)
+                resolve({
+                    data: json,
+                    unFormats: unFormats,
+                })
             } catch (e) {
                 rejects(e)
             }
         })
     }
 
-    trace(map: Array<string>, worksheet: WorkSheet) {
+    trace(map: Array<string>, worksheet: WorkSheet, format: boolean = true) {
         let data = utils.sheet_to_json(worksheet, {defval: ''})
         let count = 0;
         let result: Array<any> = []
@@ -53,14 +57,17 @@ export class ExcelToJson {
                 if (!map[j]) {
                     continue
                 }
-                _keys = map[j].split('.')
+                let _type = map[j].split('#')
+                let _item = _type[0]
+                let v_type = _type[1]
+                _keys = _item.split('.')
                 if (_keys.length >= 2) {
                     if (!datum.hasOwnProperty(_keys[0])) {
                         datum[_keys[0]] = {}
                     }
-                    datum[_keys[0]][_keys[1]] = this.filter(map[j], item[j])
+                    datum[_keys[0]][_keys[1]] = this.filter(_type[0], item[j], v_type, format)
                 } else {
-                    datum[map[j]] = this.filter(map[j], item[j])
+                    datum[_item] = this.filter(_type[0], item[j], v_type, format)
                 }
             }
             result.push(datum)
@@ -69,7 +76,10 @@ export class ExcelToJson {
         return result
     }
 
-    private filter(filed: string, value: any) {
+    private filter(filed: string, value: any, valueType: string, format: boolean = true) {
+        if (('' + value).length <= 0) {
+            return this.forceType(valueType, format)
+        }
         if (filed === 'onlineTime') {
             if (!value) {
                 return 0
@@ -92,6 +102,13 @@ export class ExcelToJson {
                 return 2;
             }
         }
-        return value || null;
+        return value
+    }
+
+    private forceType(valueType: string, format:boolean) {
+        if (!format) {
+            return null
+        }
+        return valueType == 'n' ? 0 :''
     }
 }

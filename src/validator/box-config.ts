@@ -32,7 +32,7 @@ export class BoxConfigValidator extends Validator {
     static boxNameHkSet: Array<string> = []
 
     validate(boxConfig: BoxConfig): Array<Message> {
-        ++Validator.currentId
+        this.index++
 
         this.checkEmpty('权重', boxConfig.weight)
         this.checkEmpty('礼盒ID', boxConfig.id)
@@ -46,7 +46,7 @@ export class BoxConfigValidator extends Validator {
         this.checkEmpty('封面图-正常', boxConfig.cover.normal)
 
         if (boxConfig.freeCd && boxConfig.freeCd <= 0) {
-            this.errMessage('免费抽取CD(天)需大于0')
+            this.errMessage('免费抽取CD(天) 需大于0')
         }
 
         this.checkExist('上麦动效ID', boxConfig.effectId, EffectValidator.effectIdSet)
@@ -64,7 +64,7 @@ export class BoxConfigValidator extends Validator {
         this.notRepeat("礼盒名称(香港繁体)", boxConfig.name.hk, BoxConfigValidator.boxNameHkSet)
 
         if (boxConfig.price.oneTimes * 10 < boxConfig.price.tenTimes) {
-            this.errMessage('抽10次需≤抽一次*10')
+            this.errMessage('抽10次 需≤抽一次*10')
         }
         return this.container
     }
