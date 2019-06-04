@@ -51,8 +51,8 @@ export class BoxConfigValidator extends Validator {
 
         this.checkExist('上麦动效ID', boxConfig.effectId, EffectValidator.effectIdSet)
 
-        if (boxConfig.onlineTime && (!/^\d{10}$/.test('' + boxConfig.onlineTime)
-            || !/^\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s\d{2}:\d{2}(\d{2})?$/)) {
+        if (boxConfig.onlineTime
+            && !/^\d{10}$/.test('' + boxConfig.onlineTime)) {
             this.errMessage('上线时间时间格式不正确')
         }
         this.validateFile("封面图-女", boxConfig.cover.female)

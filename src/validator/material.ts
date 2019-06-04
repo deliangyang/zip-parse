@@ -16,8 +16,8 @@ interface Slice {
 }
 
 interface Coordinate {
-    up: string
-    down: string
+    x: number
+    y: number
 }
 
 export interface Material extends Datum {
@@ -36,7 +36,8 @@ export interface Material extends Datum {
     type: number
     number: number
     refItemId: number
-    coordinate: Coordinate,
+    coordinateUp: Coordinate,
+    coordinateDown: Coordinate,
     effectId: number,
 }
 
@@ -73,7 +74,8 @@ export class MaterialValidator extends Validator {
         // this.checkEmpty('预览图', material.image.original)
         this.checkEmpty('上层切片', material.slice.up)
         this.checkEmpty('物品类型', material.type)
-        this.checkEmpty('上层切片坐标', material.coordinate.up)
+        this.checkEmpty('上层切片坐标X', material.coordinateUp.x)
+        this.checkEmpty('上层切片坐标Y', material.coordinateUp.y)
 
         this.checkEmpty('物品名称(简体中文)', material.name.cn, 20)
         this.checkEmpty('物品名称(台湾繁体)', material.name.tw, 20)
@@ -92,7 +94,7 @@ export class MaterialValidator extends Validator {
             this.validateFile("下层切片", material.slice.down)
         }
 
-        if (material.onlineTime && (!/^\d{10}$/.test('' + material.onlineTime))) {
+        if (material.onlineTime && !/^\d{10}$/.test('' + material.onlineTime)) {
             console.log(material.onlineTime)
             this.errMessage(`时间格式不正确 ${material.onlineTime}`)
         }

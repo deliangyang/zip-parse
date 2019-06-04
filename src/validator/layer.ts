@@ -25,6 +25,7 @@ export class LayerValidator extends Validator {
         LayerValidator.idSet.push(layer.id)
         this.checkEmpty('层级ID', layer.id)
         this.checkEmpty('类别', layer.categoryId)
+        this.checkEmpty('上层级数', layer.layer.up)
 
         if (layer.layer.up && layer.layer.up < 0) {
             this.errMessage("上层级数 不能为负数")
