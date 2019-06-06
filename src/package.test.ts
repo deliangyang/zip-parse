@@ -6,7 +6,7 @@ describe('Config.xlsx Test', () => {
 
     it('Config content parse', () => {
         let excel2json = new ExcelToJson()
-        fs.readFile('config.xlsx', function(err, data) {
+        fs.readFile('22.xlsx', function(err, data) {
             excel2json.parse(data).then((data) => {
                 console.log(JSON.stringify(data))
             })
@@ -31,6 +31,7 @@ describe('Unzip Test', () => {
 
     it('unzip content parse', () => {
         fs.readFile('1559544433.zip', function(err, data) {
+            return false;
             let parser = new Parser()
             parser.unzip(data, 'config.xlsx').then((res: Hash) => {
                 for (let item in res['result']) {
