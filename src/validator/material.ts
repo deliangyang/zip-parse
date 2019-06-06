@@ -109,11 +109,11 @@ export class MaterialValidator extends Validator {
 
 
         if (!_.includes(this.gender, material.gender)) {
-            this.errMessage('性别 只能为' + this.gender.join('、'))
+            this.errMessage('性别 只能为' + ['男', '女'].join('、'))
         }
 
         if (!_.includes(this.type, material.type)) {
-            this.errMessage('物品类型 只能为' + this.type.join('、'))
+            this.errMessage('物品类型 只能为' + ['成品', '碎片'].join('、'))
         }
 
         if (material.type === 1) {
@@ -127,7 +127,7 @@ export class MaterialValidator extends Validator {
             }
 
             if (!material || material.number < 2 || material.number > 100) {
-                this.errMessage('数量区间 检测（2个至100个合格）')
+                this.errMessage('碎片数量 不在区间')
             }
 
             if (_.includes(MaterialValidator.refItemIdSet, material.refItemId)) {

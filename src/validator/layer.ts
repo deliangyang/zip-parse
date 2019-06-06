@@ -1,4 +1,3 @@
-import * as _ from "lodash"
 import {Validator} from "../validator"
 import {Message} from "../message";
 

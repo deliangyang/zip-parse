@@ -80,6 +80,8 @@ export class Parser {
         let self = this
         return new Promise((resolve, rejects) => {
             JSZip.loadAsync(data).then(function (zip) {
+                self.clean()
+
                 self.fileContainer(zip)
 
                 try {
@@ -137,5 +139,36 @@ export class Parser {
         })
 
         Validator.setFiles(files)
+    }
+
+    protected clean()
+    {
+        Validator.setFiles([])
+        BoxValidator.itemIdSet = []
+        BoxConfigValidator.boxIdSet = []
+        BoxConfigValidator.boxNameHkSet = []
+        BoxConfigValidator.boxNameSet = []
+        BoxConfigValidator.boxNameTwSet = []
+
+        CategoryValidator.categorySet = []
+        CategoryValidator.idSet = []
+        CategoryValidator.categoryHkSet = []
+        CategoryValidator.categoryTwSet = []
+
+        EffectValidator.effectIdSet = []
+        EffectValidator.effectCnNameSet = []
+        EffectValidator.effectHhNameSet = []
+        EffectValidator.effectTwNameSet = []
+
+        LayerValidator.idSet = []
+        LayerValidator.layerDownSet = []
+        LayerValidator.layerUpSet = []
+
+        MaterialValidator.productSet = []
+        MaterialValidator.nameHkSet = []
+        MaterialValidator.nameSet = []
+        MaterialValidator.nameTwSet = []
+        MaterialValidator.refItemIdSet = []
+        MaterialValidator.itemIdSet = []
     }
 }
