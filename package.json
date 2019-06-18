@@ -10,15 +10,18 @@
     "xlsx": "^0.14.3"
   },
   "devDependencies": {
-    "ts-node": "^8.1.0",
+    "@types/chai": "^4.1.7",
     "@types/lodash": "^4.14.123",
     "@types/mocha": "^5.2.6",
     "@types/should": "^13.0.0",
-    "@types/chai": "^4.1.7",
     "chai": "^4.2.0",
     "commonjs": "0.0.1",
+    "mocha": "^6.1.4",
     "ts-loader": "^5.4.6",
-    "typescript": "^3.4.5"
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
   },
   "scripts": {
     "test": "mocha -r ./node_modules/ts-node/register src/package.test.ts",
@@ -26,7 +29,7 @@
     "prod": "webpack -p",
     "watch": "webpack --watch",
     "clean": "rm -rf src/**/*.js && rm -rf src/**/*.js.map && rm -rf src/*.js && rm -rf src/*.js.map && rm -rf src/**/*.d.ts",
-    "release": "cp -rf dist/bundle.js D:\\\\work\\\\party-api\\\\public\\\\admin\\\\js\\\\dress_up_parser.js",
+    "release": "bash -c 'cp -rf ./dist/bundle.js /mnt/e/work/party-api/public/admin/js/dress_up_parser.js'",
     "go": "npm run prod && npm run release"
   },
   "author": "",

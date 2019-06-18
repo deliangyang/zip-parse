@@ -100,7 +100,7 @@ export class Parser {
                         self.validate('items', items['unFormats'], new MaterialValidator(zip))
                         self.validate('boxes', items['unFormats'], new BoxConfigValidator(zip))
                         self.validate('boxItems', items['unFormats'], new BoxValidator(zip))
-
+                        console.log(items)
                         resolve({
                             json: items['data'],
                             result: self.result,

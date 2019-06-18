@@ -45,9 +45,9 @@ export let sheetsMap: SheetMap = {
         name: '类别配置',
         map: [
             'id#n',
+            'name.cn#s',
             'name.tw#s',
             'name.hk#s',
-            'name.cn#s',
             'gender#n',
             'slice.normal#s',
             'slice.grey#s',
@@ -76,7 +76,7 @@ export let sheetsMap: SheetMap = {
         map: [
             'boxId#n',
             'itemId#n',
-            'drawFactors#n',
+            'chance#n',
         ]
     },
     layers: {

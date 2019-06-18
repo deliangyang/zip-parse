@@ -70,6 +70,7 @@ export class ExcelToJson {
                     datum[_item] = this.filter(_type[0], item[j], v_type, format)
                 }
             }
+            console.log(datum)
             result.push(datum)
         })
 
