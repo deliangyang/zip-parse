@@ -132,18 +132,23 @@ export class Parser {
     protected fileContainer(zip: JSZip) {
         let files: Array<string> = []
         let name: string
+        let effectFiles: Array<string> = []
         zip.forEach((relativePath, zipEntry) => {
+            if (/^effect\/\d+\/$/.test(zipEntry.name)) {
+                effectFiles.push(zipEntry.name);
+            }
             name = zipEntry.name.split('/').pop()
                 .replace(/\.png/, '')
             files.push(name)
         })
-
         Validator.setFiles(files)
+        Validator.setEffectFiles(effectFiles)
     }
 
     protected clean()
     {
         Validator.setFiles([])
+        Validator.setEffectFiles([])
         BoxValidator.itemIdSet = []
         BoxConfigValidator.boxIdSet = []
         BoxConfigValidator.boxNameHkSet = []

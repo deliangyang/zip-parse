@@ -19,6 +19,8 @@ export abstract class Validator {
 
     protected static files: Array<string> = []
 
+    protected static effectFiles: Array<string> = []
+
     protected index: number = 2;
 
     protected zip: JSZip
@@ -43,6 +45,10 @@ export abstract class Validator {
 
     public static setFiles(files: Array<string>) {
         Validator.files = files
+    }
+
+    public static setEffectFiles(files: Array<string>) {
+        Validator.effectFiles = files;
     }
 
     /**

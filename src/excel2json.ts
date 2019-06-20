@@ -85,8 +85,9 @@ export class ExcelToJson {
             if (!value) {
                 return 0
             }
-
-            let date = new Date(1900, 0, value, -1)
+            value = value + (new Date()).getTimezoneOffset() / 60 / 24
+            let date = new Date((value - 1) * 24 * 3600000 + 1)
+            date.setUTCFullYear(date.getFullYear() - 70)
             return parseInt('' + date.getTime() / 1000);
         } else if (filed === 'gender') {
             if (value === '男') {

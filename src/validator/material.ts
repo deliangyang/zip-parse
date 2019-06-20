@@ -20,6 +20,11 @@ interface Coordinate {
     y: number
 }
 
+interface Flash {
+    normal: number
+    small: number
+}
+
 export interface Material extends Datum {
     weight: number
     id: number
@@ -39,6 +44,8 @@ export interface Material extends Datum {
     coordinateUp: Coordinate,
     coordinateDown: Coordinate,
     effectId: number,
+    flash: Flash
+    flashLayer: number
 }
 
 export class MaterialValidator extends Validator {
@@ -52,6 +59,7 @@ export class MaterialValidator extends Validator {
     itemLevel: Array<string> = ['S', 'SS']
     gender: Array<number> = [1, 2]
     type: Array<number> = [1, 2]
+    effectLayer: Array<number> = [1, 2]
 
     constructor(zip: JSZip) {
         super(zip);
@@ -76,6 +84,11 @@ export class MaterialValidator extends Validator {
         this.checkEmpty('物品类型', material.type)
         this.checkEmpty('上层切片坐标X', material.coordinateUp.x)
         this.checkEmpty('上层切片坐标Y', material.coordinateUp.y)
+
+        if (material.slice.down) {
+            this.checkEmpty('下层切片坐标X', material.coordinateDown.x)
+            this.checkEmpty('下层切片坐标Y', material.coordinateDown.y)
+        }
 
         this.checkEmpty('物品名称(简体中文)', material.name.cn, 20)
         this.checkEmpty('物品名称(台湾繁体)', material.name.tw, 20)
@@ -107,6 +120,9 @@ export class MaterialValidator extends Validator {
             this.errMessage('类别ID 必须在类别配置表存在')
         }
 
+        if (material.flashLayer && !_.includes(this.effectLayer, material.flashLayer)) {
+            this.errMessage('动效预览层级 只能为' + this.effectLayer.join('、'))
+        }
 
         if (!_.includes(this.gender, material.gender)) {
             this.errMessage('性别 只能为' + ['男', '女'].join('、'))
@@ -114,6 +130,14 @@ export class MaterialValidator extends Validator {
 
         if (!_.includes(this.type, material.type)) {
             this.errMessage('物品类型 只能为' + ['成品', '碎片'].join('、'))
+        }
+
+        if (material.flash.normal && !_.includes(Validator.effectFiles, 'effect/' + material.flash.normal + '/')) {
+            this.errMessage('物品动效 文件不存在 ' + material.flash.normal)
+        }
+
+        if (material.flash.small && !_.includes(Validator.effectFiles, 'effect/' + material.flash.small + '/')) {
+            this.errMessage('物品动效预览 文件不存在 ' + material.flash.small)
         }
 
         if (material.type === 1) {
