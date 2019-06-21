@@ -1,8 +1,11 @@
 import * as XLSX from 'xlsx';
 import {WorkSheet} from "xlsx";
 import {sheetsMap} from "./sheet-map";
+import {Link, Target} from "./link";
+import {Base64} from "js-base64";
+import toBase64 = Base64.toBase64;
 
-const { utils } = XLSX;
+const {utils} = XLSX;
 
 export interface Hash {
     [key: string]: any
@@ -14,7 +17,7 @@ export class ExcelToJson {
         let self = this
         return new Promise((resolve, rejects) => {
             try {
-                let workbook = XLSX.read(data, {type:"array"})
+                let workbook = XLSX.read(data, {type: "array"})
                 let json: Hash = {}
                 let unFormats: Hash = {}
                 for (const key in sheetsMap) {
@@ -85,10 +88,17 @@ export class ExcelToJson {
             if (!value) {
                 return 0
             }
+            console.log(value);
             value = value + (new Date()).getTimezoneOffset() / 60 / 24
-            let date = new Date((value - 1) * 24 * 3600000 + 1)
+            let sm = (value - 1) * 24 * 3600000 + 1
+            let date = new Date(sm)
             date.setUTCFullYear(date.getFullYear() - 70)
-            return parseInt('' + date.getTime() / 1000);
+            let s = parseInt('' + date.getTime() / 1000);
+            console.log(s)
+            if (s % 10 === 9) {
+                s += 1
+            }
+            return s;
         } else if (filed === 'gender') {
             if (value === '男') {
                 return 1;
@@ -103,14 +113,52 @@ export class ExcelToJson {
             } else if (value === '碎片') {
                 return 2;
             }
+        } else if (filed === 'link') {
+            return this.parseLink(value)
         }
         return value
     }
 
-    private forceType(valueType: string, format:boolean) {
+    private parseLink(value: string) {
+        if (value.length <= 0) {
+            return '';
+        }
+        let data: Link
+        if (/^(webview|explorer)#https?:\/\//.test(value)) {
+            let item = value.split('#')
+            let target = item[0] as Target
+            data = {
+                url: item[1],
+                target: target,
+                data: {}
+            }
+        } else if (/\/user\/rechargeGold/.test(value)) {
+            data = {
+                url: value,
+                target: "app",
+                data: {}
+            }
+        } else if (/user\/boxes#boxId:\d+/.test(value)) {
+            let items = value.split('#')
+            let boxId = items[1].split(':')
+            data = {
+                url: items[0],
+                target: "app",
+                data: {
+                    boxId: boxId[1],
+                }
+            }
+        } else {
+            return 'error#' + value;
+        }
+        let str = JSON.stringify(data);
+        return toBase64(str);
+    }
+
+    private forceType(valueType: string, format: boolean) {
         if (!format) {
             return null
         }
-        return valueType == 'n' ? 0 :''
+        return valueType == 'n' ? 0 : ''
     }
 }

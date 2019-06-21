@@ -4,7 +4,9 @@
   "description": "",
   "main": "webpack.config.js",
   "dependencies": {
+    "@types/js-base64": "^2.3.1",
     "@types/jszip": "^3.1.5",
+    "js-base64": "^2.5.1",
     "jszip": "^3.2.1",
     "lodash": "^4.17.11",
     "xlsx": "^0.14.3"

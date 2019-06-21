@@ -107,6 +107,14 @@ export class MaterialValidator extends Validator {
             this.validateFile("下层切片", material.slice.down)
         }
 
+        if (material.link && material.link.length > 255) {
+            this.errMessage(`链接编码之后长度不得超过255 ${material.link}`);
+        }
+
+        if (material.link && /^error#/.test(material.link)) {
+            this.errMessage(`不支持该链接#` + material.link.substr('error#'.length));
+        }
+
         if (material.onlineTime && !/^\d{10}$/.test('' + material.onlineTime)) {
             console.log(material.onlineTime)
             this.errMessage(`时间格式不正确 ${material.onlineTime}`)
