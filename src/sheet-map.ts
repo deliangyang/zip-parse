@@ -45,12 +45,14 @@ export let sheetsMap: SheetMap = {
         name: '类别配置',
         map: [
             'id#n',
+            'rejectId#s',
             'name.cn#s',
             'name.tw#s',
             'name.hk#s',
             'gender#n',
             'slice.normal#s',
             'slice.grey#s',
+            'reviewPic#s',
         ]
     },
     boxes: {

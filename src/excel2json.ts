@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import {WorkSheet} from "xlsx";
+import {WorkSheet} from 'xlsx';
 import {sheetsMap} from "./sheet-map";
 import {Link, Target} from "./link";
 import {Base64} from "js-base64";
@@ -81,6 +81,28 @@ export class ExcelToJson {
     }
 
     private filter(filed: string, value: any, valueType: string, format: boolean = true) {
+        if (filed === 'rejectId') {
+            if (!value) {
+                return []
+            }
+            let rejectIds = ('' + value).split('#');
+            return rejectIds.map(function (a) {
+                return parseInt(a);
+            });
+        } else if (filed === 'reviewPic') {
+            if (!value) {
+                return {
+                    up: '',
+                    down: '',
+                }
+            }
+            let item = value.split(',')
+            return {
+                up: item[0],
+                down: item[1],
+            }
+        }
+
         if (('' + value).length <= 0) {
             return this.forceType(valueType, format)
         }
