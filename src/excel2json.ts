@@ -154,7 +154,7 @@ export class ExcelToJson {
                 target: target,
                 data: {}
             }
-        } else if (/\/user\/rechargeGold/.test(value)) {
+        } else if (/user\/rechargeGold/.test(value)) {
             data = {
                 url: value,
                 target: "app",
