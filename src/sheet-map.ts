@@ -105,6 +105,18 @@ export let sheetsMap: SheetMap = {
             'obtain.hk#s',
             'image#s'
         ]
+    },
+    defaultConfig: {
+        name: '默认物品配置',
+        map: [
+            'id#n',
+            'name#s',
+            'gender#n',
+            'layerId#n',
+            'picUp#s',
+            'upCoordinate.x#n',
+            'upCoordinate.y#n',
+        ]
     }
 }
 
