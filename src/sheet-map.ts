@@ -112,6 +112,7 @@ export let sheetsMap: SheetMap = {
             'id#n',
             'name#s',
             'gender#n',
+            'categoryId#n',
             'layerId#n',
             'picUp#s',
             'upCoordinate.x#n',
