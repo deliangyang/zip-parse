@@ -103,7 +103,8 @@ export let sheetsMap: SheetMap = {
             'obtain.cn#s',
             'obtain.tw#s',
             'obtain.hk#s',
-            'image#s'
+            'image#s',
+            'link#s'
         ]
     },
     defaultConfig: {
