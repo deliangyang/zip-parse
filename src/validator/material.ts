@@ -80,15 +80,7 @@ export class MaterialValidator extends Validator {
         this.checkEmpty('等级', material.level)
         this.checkEmpty('缩略图', material.image.thumb)
         // this.checkEmpty('预览图', material.image.original)
-        this.checkEmpty('上层切片', material.slice.up)
         this.checkEmpty('物品类型', material.type)
-        this.checkEmpty('上层切片坐标X', material.coordinateUp.x)
-        this.checkEmpty('上层切片坐标Y', material.coordinateUp.y)
-
-        if (material.slice.down) {
-            this.checkEmpty('下层切片坐标X', material.coordinateDown.x)
-            this.checkEmpty('下层切片坐标Y', material.coordinateDown.y)
-        }
 
         this.checkEmpty('物品名称(简体中文)', material.name.cn, 20)
         this.checkEmpty('物品名称(台湾繁体)', material.name.tw, 20)
@@ -101,10 +93,28 @@ export class MaterialValidator extends Validator {
 
         this.validateFile('缩略图', material.image.thumb)
         // this.validateFile('预览图', material.image.original)
-        this.validateFile('上层切片', material.slice.up)
+        if (material.slice.up) {
+            this.validateFile('上层切片', material.slice.up)
+            if (material.coordinateUp.x === null) {
+                this.errMessage('上层切片坐标x不能为空')
+            }
+            if (material.coordinateUp.y === null) {
+                this.errMessage('上层切片坐标y不能为空')
+            }
+        }
 
         if (material.slice.down) {
-            this.validateFile("下层切片", material.slice.down)
+            this.validateFile('下层切片', material.slice.down)
+            if (material.coordinateDown.x === null) {
+                this.errMessage('下层切片坐标x不能为空')
+            }
+            if (material.coordinateDown.y === null) {
+                this.errMessage('下层切片坐标y不能为空')
+            }
+        }
+
+        if (!material.slice.up && !material.slice.down) {
+            this.errMessage('上层切片和下层切片名称至少有一个存在')
         }
 
         if (material.link && material.link.length > 255) {
