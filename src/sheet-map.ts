@@ -95,8 +95,6 @@ export let sheetsMap: SheetMap = {
         map: [
             'weight#n',
             'id#n',
-            'effect.up#n',
-            'effect.down#n',
             'name.cn#s',
             'name.tw#s',
             'name.hk#s',

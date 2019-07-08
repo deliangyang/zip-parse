@@ -4,10 +4,6 @@ import {Message} from "../message";
 export interface Effect {
     weight: number
     id: number
-    effect: {
-        down: number,
-        up: number,
-    }
     name: I18N
     obtain: I18N
     image: string
