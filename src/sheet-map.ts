@@ -65,6 +65,7 @@ export let sheetsMap: SheetMap = {
             'name.hk#s',
             'price.oneTimes#n',
             'price.tenTimes#n',
+            'lotteryGoods#s',
             'cover.female#s',
             'cover.male#s',
             'cover.normal#s',

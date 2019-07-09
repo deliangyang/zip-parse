@@ -1,6 +1,8 @@
 import {Datum, I18N, Validator} from "../validator";
 import {Message} from "../message";
 import {EffectValidator} from "./effect";
+import * as _ from 'lodash'
+import {MaterialValidator} from "./material";
 
 interface Price {
     oneTimes: number,
@@ -22,6 +24,7 @@ export interface BoxConfig extends Datum {
     freeCd: number | string
     onlineTime: number | string,
     effectId: number
+    lotteryGoods: string
 }
 
 export class BoxConfigValidator extends Validator {
@@ -66,6 +69,32 @@ export class BoxConfigValidator extends Validator {
         if (boxConfig.price.oneTimes * 10 < boxConfig.price.tenTimes) {
             this.errMessage('抽10次 需≤抽一次*10')
         }
+
+        if (boxConfig.lotteryGoods && boxConfig.lotteryGoods.length > 0) {
+            let times = [1, 10];
+            let items = boxConfig.lotteryGoods.split('#')
+            items.forEach( (item) => {
+                let datum = item.split('@')
+                if (datum.length !== 3) {
+                    this.errMessage('连抽必中，数据格式不正确, ' + boxConfig.lotteryGoods)
+                    return
+                }
+                if (!_.includes(times, parseInt(datum[0]))) {
+                    this.errMessage('连抽必中，x取值只能取抽取次数, ' + boxConfig.lotteryGoods)
+                }
+
+                if (!_.includes(MaterialValidator.level, datum[2])) {
+                    this.errMessage('连抽必中，物品等级不正确, ' + boxConfig.lotteryGoods)
+                }
+
+                let y = parseInt(datum[1])
+                let x = parseInt(datum[0])
+                if (y < 1 || y > x) {
+                    this.errMessage('连抽必中，需满足1≤y≤x, ' + boxConfig.lotteryGoods)
+                }
+            })
+        }
+
         return this.container
     }
 

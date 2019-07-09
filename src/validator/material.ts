@@ -55,7 +55,7 @@ export class MaterialValidator extends Validator {
     static nameHkSet: Array<string> = []
     static refItemIdSet: Array<number|string> = []
     static productSet: Array<number> = []
-    level: Array<string> = ['A', 'B', 'C', 'S', 'SS']
+    static level: Array<string> = ['A', 'B', 'C', 'S', 'SS']
     itemLevel: Array<string> = ['S', 'SS']
     gender: Array<number> = [1, 2]
     type: Array<number> = [1, 2]
@@ -159,8 +159,8 @@ export class MaterialValidator extends Validator {
         }
 
         if (material.type === 1) {
-            if (!_.includes(this.level, material.level)) {
-                this.errMessage('等级 只能为' + this.level.join('、'))
+            if (!_.includes(MaterialValidator.level, material.level)) {
+                this.errMessage('等级 只能为' + MaterialValidator.level.join('、'))
             }
             MaterialValidator.productSet.push(material.id)
         } else {

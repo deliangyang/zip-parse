@@ -81,6 +81,9 @@ export class ExcelToJson {
     }
 
     private filter(filed: string, value: any, valueType: string, format: boolean = true) {
+        if (filed == 'chance') {
+            return Math.round(value)
+        }
         if (filed === 'rejectId') {
             if (!value) {
                 return []
