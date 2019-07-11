@@ -9,7 +9,7 @@ interface SheetMap {
 
 export let sheetsMap: SheetMap = {
     items: {
-        name: '【仅开发用】物品配置',
+        name: '物品配置',
         map: [
             'weight#n',
             'id#n',
@@ -56,7 +56,7 @@ export let sheetsMap: SheetMap = {
         ]
     },
     boxes: {
-        name: '【仅开发用】礼盒配置',
+        name: '礼盒配置',
         map: [
             'weight#n',
             'id#n',
@@ -75,7 +75,7 @@ export let sheetsMap: SheetMap = {
         ]
     },
     boxItems: {
-        name: '【仅开发用】礼盒详情配置',
+        name: '礼盒详情配置',
         map: [
             'boxId#n',
             'itemId#n',
@@ -87,8 +87,8 @@ export let sheetsMap: SheetMap = {
         map: [
             'id#n',
             'categoryId#n',
-            'layer.up#s',
-            'layer.down#s',
+            'layer.up#n',
+            'layer.down#n',
         ]
     },
     effect: {
