@@ -64,6 +64,7 @@ export let sheetsMap: SheetMap = {
             'name.tw#s',
             'name.hk#s',
             'price.oneTimes#n',
+            'priceStep#s',
             'price.tenTimes#n',
             'lotteryGoods#s',
             'cover.female#s',
@@ -96,6 +97,7 @@ export let sheetsMap: SheetMap = {
         map: [
             'weight#n',
             'id#n',
+            'effectSingId#n',
             'name.cn#s',
             'name.tw#s',
             'name.hk#s',

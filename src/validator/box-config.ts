@@ -25,6 +25,7 @@ export interface BoxConfig extends Datum {
     onlineTime: number | string,
     effectId: number
     lotteryGoods: string
+    priceStep: string
 }
 
 export class BoxConfigValidator extends Validator {
@@ -93,6 +94,22 @@ export class BoxConfigValidator extends Validator {
                     this.errMessage('连抽必中，需满足1≤y≤x, ' + boxConfig.lotteryGoods)
                 }
             })
+        }
+
+        if (boxConfig.priceStep && boxConfig.priceStep.length > 0) {
+            let prices = boxConfig.priceStep.split('#');
+            if (prices.length <= 0) {
+                this.errMessage('抽一次阶梯价格, 格式不正确')
+            }
+            let newNums:number[] = prices.map((num) => {
+                return parseInt(num)
+            })
+            console.log(newNums)
+            let maxPrice = Math.max(...newNums)
+            console.log('max price:' + maxPrice)
+            if (!maxPrice || maxPrice > boxConfig.price.oneTimes) {
+                this.errMessage('抽一次阶梯价格, 最大一位数不能超过抽一次金币')
+            }
         }
 
         return this.container

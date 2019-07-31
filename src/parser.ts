@@ -64,6 +64,8 @@ export class Parser {
             validate.validate(element)
         })
 
+        validate.checkRepeat();
+
         validate.getErrors().forEach(item => {
             error = Message.parse(key, item.index, item.message)
             this.result.push(error)
@@ -177,5 +179,7 @@ export class Parser {
         MaterialValidator.nameTwSet = []
         MaterialValidator.refItemIdSet = []
         MaterialValidator.itemIdSet = []
+        EffectValidator.effectSingId = []
+        EffectValidator.effectLines = []
     }
 }

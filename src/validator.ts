@@ -138,4 +138,6 @@ export abstract class Validator {
     public getErrors(): Array<Message> {
         return this.container
     }
+
+    public checkRepeat(): void {}
 }
