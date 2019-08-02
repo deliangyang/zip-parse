@@ -131,7 +131,7 @@ export abstract class Validator {
      */
     protected checkExist<T>(name: string, value: T, set: Array<T>) {
         if (!_.includes(set, value)) {
-            this.errMessage(`${name} 文件不存在`)
+            this.errMessage(`${name} 不存在`)
         }
     }
 

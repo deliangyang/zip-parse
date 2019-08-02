@@ -53,7 +53,9 @@ export class BoxConfigValidator extends Validator {
             this.errMessage('免费抽取CD(天) 需大于0')
         }
 
-        this.checkExist('上麦动效ID', boxConfig.effectId, EffectValidator.effectIdSet)
+        if (boxConfig.effectId) {
+            this.checkExist('上麦动效ID', boxConfig.effectId, EffectValidator.effectIdSet)
+        }
 
         if (boxConfig.onlineTime
             && !/^\d{10}$/.test('' + boxConfig.onlineTime)) {
@@ -96,7 +98,9 @@ export class BoxConfigValidator extends Validator {
             })
         }
 
-        if (boxConfig.priceStep && boxConfig.priceStep.length > 0) {
+        if (!boxConfig.priceStep || boxConfig.priceStep.length < 0) {
+            this.errMessage('抽一次阶梯价格，不能为空')
+        } else if (boxConfig.priceStep) {
             let prices = boxConfig.priceStep.split('#');
             if (prices.length <= 0) {
                 this.errMessage('抽一次阶梯价格, 格式不正确')
