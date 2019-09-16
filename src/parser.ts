@@ -9,6 +9,7 @@ import {BoxValidator} from "./validator/box";
 import {Message} from "./message";
 import {EffectValidator} from "./validator/effect";
 import {DefaultConfigValidator} from "./validator/default-config";
+import {AllEffectValidator} from "./validator/all-effect";
 
 export class Parser {
 
@@ -104,6 +105,7 @@ export class Parser {
                         self.validate('boxes', items['unFormats'], new BoxConfigValidator(zip))
                         self.validate('boxItems', items['unFormats'], new BoxValidator(zip))
                         self.validate('defaultConfig', items['unFormats'], new DefaultConfigValidator(zip))
+                        self.validate('allEffect', items['unFormats'], new AllEffectValidator(zip))
                         console.log(items)
                         resolve({
                             json: items['data'],

@@ -140,8 +140,28 @@ export class ExcelToJson {
             }
         } else if (filed === 'link') {
             return this.parseLink(value)
+        } else if (filed === 'effectStep') {
+            return this.parseEffectStep(value);
         }
         return value
+    }
+
+    /**
+     * 进度
+     * @param value
+     */
+    private parseEffectStep(value: string): Array<Hash>
+    {
+        let data = value.split('#')
+        let result:Array<Hash> = []
+        data.forEach((element) => {
+            let item = element.split('@')
+            result.push({
+                effectId: parseInt(item[0]),
+                step: parseFloat(item[1]),
+            })
+        });
+        return result;
     }
 
     private parseLink(value: string) {

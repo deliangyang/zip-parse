@@ -20,6 +20,7 @@ export let sheetsMap: SheetMap = {
             'categoryId#n',
             'layerId#n',
             'level#s',
+            'fashionValue#n',
             'image.thumb#s',
            // 'image.original',
             'slice.up#s',
@@ -73,6 +74,7 @@ export let sheetsMap: SheetMap = {
             'freeCd#n',
             'onlineTime#n',
             'effectId#n',
+            'effectStep#s',
         ]
     },
     boxItems: {
@@ -97,6 +99,23 @@ export let sheetsMap: SheetMap = {
         map: [
             'weight#n',
             'id#n',
+            'effectSingId#n',
+            'name.cn#s',
+            'name.tw#s',
+            'name.hk#s',
+            'obtain.cn#s',
+            'obtain.tw#s',
+            'obtain.hk#s',
+            'image#s',
+            'link#s'
+        ]
+    },
+    allEffect: {
+        name: '动效配置',
+        map: [
+            'weight#n',
+            'id#n',
+            'category#n',
             'effectSingId#n',
             'name.cn#s',
             'name.tw#s',

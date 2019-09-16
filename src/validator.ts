@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import * as JSZip from "jszip";
 import {Message} from "./message";
+import {JSZipObject} from "jszip";
 
 export class Datum {}
 
@@ -9,6 +10,8 @@ export interface I18N {
     hk: string
     tw: string
 }
+
+type UnKnownFileObject = boolean | JSZipObject
 
 export abstract class Validator {
 
@@ -89,22 +92,41 @@ export abstract class Validator {
      * @param name
      * @param filename
      */
-    protected validateFile(name: string, filename: string) {
+    protected validateFile(name: string, filename: string): void {
         this.checkEmpty(name, filename)
-        this.checkExist(name, filename, Validator.files)
+        this.checkExist(name, filename, Validator.files);
 
-        let _filename = 'images/' + filename + '.png'
-        let file = this.zip.file(_filename)
+        let pngFile = 'images/' + filename + '.png';
+        let file = this.checkFileExist(pngFile);
+
         if (file) {
-            let size:number|string = JSON.stringify(file)
-                .substr(0, 300)
-                .match(/"uncompressedSize":(\d+)/).pop()
-            if (parseInt(size) > Validator.fileSize) {
-                this.errMessage(`${name} ${filename}文件大小超过500k`)
-            }
-        } else {
-            this.errMessage(`${name} ${filename}不存在无法计算大小`)
+            return this.checkSize(file, pngFile)
         }
+
+        let jpgFile = 'images/' + filename + '.jpg';
+        file = this.checkFileExist(jpgFile);
+        if (file) {
+            return this.checkSize(file, jpgFile)
+        }
+
+        this.errMessage(`${name} ${filename}不存在无法计算大小`)
+    }
+
+    protected checkFileExist(filename: string): UnKnownFileObject
+    {
+        let file = this.zip.file(filename);
+        return file
+    }
+
+    protected checkSize(file: UnKnownFileObject, filename: string):void
+    {
+        let size:number|string = JSON.stringify(file)
+            .substr(0, 300)
+            .match(/"uncompressedSize":(\d+)/).pop()
+        if (parseInt(size) > Validator.fileSize) {
+            this.errMessage(`${name} ${filename}文件大小超过500k`)
+        }
+        return ;
     }
 
     /**
