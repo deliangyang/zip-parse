@@ -67,6 +67,7 @@ export let sheetsMap: SheetMap = {
             'price.oneTimes#n',
             'priceStep#s',
             'price.tenTimes#n',
+            'timesPrice#s',
             'lotteryGoods#s',
             'cover.female#s',
             'cover.male#s',
@@ -110,13 +111,12 @@ export let sheetsMap: SheetMap = {
             'link#s'
         ]
     },
-    allEffect: {
+    effects: {
         name: '动效配置',
         map: [
             'weight#n',
             'id#n',
             'category#n',
-            'effectSingId#n',
             'name.cn#s',
             'name.tw#s',
             'name.hk#s',

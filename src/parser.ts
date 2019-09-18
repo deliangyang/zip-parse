@@ -105,7 +105,7 @@ export class Parser {
                         self.validate('boxes', items['unFormats'], new BoxConfigValidator(zip))
                         self.validate('boxItems', items['unFormats'], new BoxValidator(zip))
                         self.validate('defaultConfig', items['unFormats'], new DefaultConfigValidator(zip))
-                        self.validate('allEffect', items['unFormats'], new AllEffectValidator(zip))
+                        self.validate('effects', items['unFormats'], new AllEffectValidator(zip))
                         console.log(items)
                         resolve({
                             json: items['data'],

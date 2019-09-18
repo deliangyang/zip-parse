@@ -25,8 +25,8 @@ export class ExcelToJson {
                     if (!workbook.Sheets.hasOwnProperty(sheetsMap[key].name)) {
                         throw Error('缺少配置' + key + ', ' + sheetsMap[key].name)
                     }
-                    json[key] = self.trace(sheetsMap[key].map, worksheet)
-                    unFormats[key] = self.trace(sheetsMap[key].map, worksheet, false)
+                    json[key] = self.trace(sheetsMap[key].map, worksheet, true, key)
+                    unFormats[key] = self.trace(sheetsMap[key].map, worksheet, false, key)
                 }
                 resolve({
                     data: json,
@@ -38,7 +38,7 @@ export class ExcelToJson {
         })
     }
 
-    trace(map: Array<string>, worksheet: WorkSheet, format: boolean = true) {
+    trace(map: Array<string>, worksheet: WorkSheet, format: boolean = true, key: string = '') {
         let data = utils.sheet_to_json(worksheet, {defval: ''})
         let count = 0;
         let result: Array<any> = []
@@ -46,6 +46,10 @@ export class ExcelToJson {
             if (count <= 0) {
                 count++
                 return false;
+            } else if (element.hasOwnProperty('weight') && element.hasOwnProperty('effectId')) {
+                if (!element['weight'] && !element['effectId']) {
+                    return false;
+                }
             }
             let item: Array<any> = []
             for (let elementKey in element) {
@@ -142,8 +146,24 @@ export class ExcelToJson {
             return this.parseLink(value)
         } else if (filed === 'effectStep') {
             return this.parseEffectStep(value);
+        } else if (filed === 'timesPrice') {
+            return this.parseTimesPrice(value)
         }
         return value
+    }
+
+    private parseTimesPrice(value: string)
+    {
+        let data = value.split('#')
+        let result:Array<Hash> = []
+        data.forEach((element) => {
+            let item = element.split('@')
+            result.push({
+                times: parseInt(item[0]),
+                price: parseFloat(item[1]),
+            })
+        });
+        return result;
     }
 
     /**
@@ -158,14 +178,14 @@ export class ExcelToJson {
             let item = element.split('@')
             result.push({
                 effectId: parseInt(item[0]),
-                step: parseFloat(item[1]),
+                step: parseFloat(item[1]) * 100,
             })
         });
         return result;
     }
 
     private parseLink(value: string) {
-        if (value.length <= 0) {
+        if (!value || value.length <= 0) {
             return '';
         }
         let data: Link

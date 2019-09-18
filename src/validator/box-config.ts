@@ -3,6 +3,7 @@ import {Message} from "../message";
 import {EffectValidator} from "./effect";
 import * as _ from 'lodash'
 import {MaterialValidator} from "./material";
+import {Hash} from "../excel2json";
 
 interface Price {
     oneTimes: number,
@@ -26,6 +27,8 @@ export interface BoxConfig extends Datum {
     effectId: number
     lotteryGoods: string
     priceStep: string
+    timesPrice: Array<Hash>
+    effectStep: Array<Hash>
 }
 
 export class BoxConfigValidator extends Validator {
@@ -114,6 +117,31 @@ export class BoxConfigValidator extends Validator {
             if (!maxPrice || maxPrice > boxConfig.price.oneTimes) {
                 this.errMessage('抽一次阶梯价格, 最大一位数不能超过抽一次金币')
             }
+        }
+
+        let hasOriginEffectStepId = false;
+        if (boxConfig.effectStep) {
+            boxConfig.effectStep.forEach(element => {
+                if (element.hasOwnProperty('effectId') && element['effectId'] == boxConfig.effectId) {
+                    hasOriginEffectStepId = true;
+                }
+            })
+        }
+        if (!hasOriginEffectStepId) {
+            this.errMessage('effectPercentage未包含effectId ' + boxConfig.effectId);
+        }
+
+        let hasOriginTimesPrice = false;
+        if (boxConfig.timesPrice) {
+            boxConfig.timesPrice.forEach(element => {
+                if (element.hasOwnProperty('price') && element['price'] == boxConfig.price.tenTimes) {
+                    hasOriginTimesPrice = true;
+                }
+            })
+        }
+
+        if (!hasOriginTimesPrice) {
+            this.errMessage('timesPrice未包含priceMul ' + boxConfig.price.tenTimes);
         }
 
         return this.container
