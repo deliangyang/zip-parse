@@ -56,6 +56,10 @@ export class BoxConfigValidator extends Validator {
             this.errMessage('免费抽取CD(天) 需大于0')
         }
 
+        if (boxConfig.effectId) {
+            this.checkExist('上麦动效ID', boxConfig.effectId, EffectValidator.effectIdSet)
+        }
+
         if (boxConfig.onlineTime
             && !/^\d{10}$/.test('' + boxConfig.onlineTime)) {
             this.errMessage('上线时间时间格式不正确')
@@ -115,20 +119,16 @@ export class BoxConfigValidator extends Validator {
             }
         }
 
-        if (boxConfig.effectStep && boxConfig.effectId) {
-            this.checkExist('上麦动效ID', boxConfig.effectId, EffectValidator.effectIdSet)
-            let hasOriginEffectStepId = false;
+        let hasOriginEffectStepId = false;
+        if (boxConfig.effectStep) {
             boxConfig.effectStep.forEach(element => {
                 if (element.hasOwnProperty('effectId') && element['effectId'] == boxConfig.effectId) {
                     hasOriginEffectStepId = true;
                 }
             })
-            if (!hasOriginEffectStepId) {
-                this.errMessage('effectPercentage未包含effectId ' + boxConfig.effectId);
-            }
-        } else if (!boxConfig.effectStep && !boxConfig.effectId) {
-        } else {
-            this.errMessage('effectPercentage和effectId须同时存在');
+        }
+        if (!hasOriginEffectStepId) {
+            this.errMessage('effectPercentage未包含effectId ' + boxConfig.effectId);
         }
 
         let hasOriginTimesPrice = false;

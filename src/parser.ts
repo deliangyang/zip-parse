@@ -144,7 +144,8 @@ export class Parser {
                 effectFiles.push(zipEntry.name);
             }
             name = zipEntry.name.split('/').pop()
-                .replace(/\.png/, '')
+                .replace(/\.png$/, '')
+                .replace(/\.jpg$/, '')
             files.push(name)
         })
         Validator.setFiles(files)

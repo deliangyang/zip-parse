@@ -31,7 +31,7 @@ describe('interface Test', () => {
 describe('Unzip Test', () => {
 
     it('unzip content parse', () => {
-        fs.readFile('226.zip', function(err, data) {
+        fs.readFile('config.zip', function(err, data) {
             let parser = new Parser()
             parser.unzip(data, 'config.xlsx').then((res: Hash) => {
                 for (let item in res['result']) {
