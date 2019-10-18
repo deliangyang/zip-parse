@@ -16,6 +16,7 @@ export class Parser {
     debug: boolean = false
 
     private result: Array<string> = []
+
     /**
      * 设置debug模式
      *
@@ -41,7 +42,11 @@ export class Parser {
                     zip.remove(_filename)
                 })
                 zip.file(filename, content)
-                zip.generateAsync({type : "nodebuffer", compression: "DEFLATE", compressionOptions: {level: 9}}).then(value => {
+                zip.generateAsync({
+                    type: "nodebuffer",
+                    compression: "DEFLATE",
+                    compressionOptions: {level: 9}
+                }).then(value => {
                     let file = new File([value], 'config.zip')
                     resolve(file)
                 })
@@ -59,7 +64,7 @@ export class Parser {
      * @param validate
      */
     public validate(key: string, data: Hash, validate: Validator) {
-        let error:string = ''
+        let error: string = ''
 
         data[key].forEach((element: any) => {
             validate.validate(element)
@@ -71,6 +76,17 @@ export class Parser {
             error = Message.parse(key, item.index, item.message)
             this.result.push(error)
         })
+    }
+
+    protected validatorsMap: Hash = {
+        'effect': EffectValidator,
+        'categories': CategoryValidator,
+        'layers': LayerValidator,
+        'items': MaterialValidator,
+        'boxes': BoxConfigValidator,
+        'boxItems': BoxValidator,
+        'defaultConfig': DefaultConfigValidator,
+        'effects': AllEffectValidator,
     }
 
     /**
@@ -94,18 +110,17 @@ export class Parser {
                     return rejects(e)
                 }
 
-                zip.file(filename).async('array').then(function(data) {
+                zip.file(filename).async('array').then(function (data) {
                     let excel2Json = new ExcelToJson()
                     excel2Json.parse(data).then((items: Hash) => {
-                        self.result = []
-                        self.validate('effect', items['unFormats'], new EffectValidator(zip))
-                        self.validate('categories', items['unFormats'], new CategoryValidator(zip))
-                        self.validate('layers', items['unFormats'], new LayerValidator(zip))
-                        self.validate('items', items['unFormats'], new MaterialValidator(zip))
-                        self.validate('boxes', items['unFormats'], new BoxConfigValidator(zip))
-                        self.validate('boxItems', items['unFormats'], new BoxValidator(zip))
-                        self.validate('defaultConfig', items['unFormats'], new DefaultConfigValidator(zip))
-                        self.validate('effects', items['unFormats'], new AllEffectValidator(zip))
+                        self.result = [];
+                        let key: string;
+                        for (key in self.validatorsMap) {
+                            if (self.validatorsMap.hasOwnProperty(key)) {
+                                let validate: any = self.validatorsMap[key];
+                                self.validate(key, items['unFormats'], new validate(zip))
+                            }
+                        }
                         console.log(items)
                         resolve({
                             json: items['data'],
@@ -128,8 +143,7 @@ export class Parser {
      * @param filename
      * @param folder
      */
-    protected checkFiles(zip: JSZip, filename: string, folder?: string)
-    {
+    protected checkFiles(zip: JSZip, filename: string, folder?: string) {
         if (!zip.file(filename)) {
             throw new Error(`Excel ${filename} 不存在`)
         }
@@ -152,8 +166,7 @@ export class Parser {
         Validator.setEffectFiles(effectFiles)
     }
 
-    protected clean()
-    {
+    protected clean() {
         Validator.setFiles([])
         Validator.setEffectFiles([])
         BoxValidator.itemIdSet = []
