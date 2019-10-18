@@ -41,7 +41,7 @@ export class Parser {
                     zip.remove(_filename)
                 })
                 zip.file(filename, content)
-                zip.generateAsync({type : "uint8array"}).then(value => {
+                zip.generateAsync({type : "nodebuffer", compression: "DEFLATE", compressionOptions: {level: 9}}).then(value => {
                     let file = new File([value], 'config.zip')
                     resolve(file)
                 })
