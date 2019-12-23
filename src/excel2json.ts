@@ -14,18 +14,18 @@ export interface Hash {
 export class ExcelToJson {
 
     parse(data: any) {
-        let self = this
+        let self = this;
         return new Promise((resolve, rejects) => {
             try {
-                let workbook = XLSX.read(data, {type: "array"})
-                let json: Hash = {}
-                let unFormats: Hash = {}
+                let workbook = XLSX.read(data, {type: "array"});
+                let json: Hash = {};
+                let unFormats: Hash = {};
                 for (const key in sheetsMap) {
-                    let worksheet = workbook.Sheets[sheetsMap[key].name]
+                    let worksheet = workbook.Sheets[sheetsMap[key].name];
                     if (!workbook.Sheets.hasOwnProperty(sheetsMap[key].name)) {
                         throw Error('缺少配置' + key + ', ' + sheetsMap[key].name)
                     }
-                    json[key] = self.trace(sheetsMap[key].map, worksheet, true, key)
+                    json[key] = self.trace(sheetsMap[key].map, worksheet, true, key);
                     unFormats[key] = self.trace(sheetsMap[key].map, worksheet, false, key)
                 }
                 resolve({
@@ -58,16 +58,16 @@ export class ExcelToJson {
                 }
                 item.push(element[elementKey])
             }
-            let datum: Hash = {}
-            let _keys: Array<string> = []
+            let datum: Hash = {};
+            let _keys: Array<string> = [];
             for (let j = 0; j <= map.length; j++) {
                 if (!map[j]) {
                     continue
                 }
-                let _type = map[j].split('#')
-                let _item = _type[0]
-                let v_type = _type[1]
-                _keys = _item.split('.')
+                let _type = map[j].split('#');
+                let _item = _type[0];
+                let v_type = _type[1];
+                _keys = _item.split('.');
                 if (_keys.length >= 2) {
                     if (!datum.hasOwnProperty(_keys[0])) {
                         datum[_keys[0]] = {}
@@ -77,9 +77,8 @@ export class ExcelToJson {
                     datum[_item] = this.filter(_type[0], item[j], v_type, format)
                 }
             }
-            console.log(datum)
             result.push(datum)
-        })
+        });
 
         return result
     }
@@ -103,7 +102,7 @@ export class ExcelToJson {
                     down: '',
                 }
             }
-            let item = value.split(',')
+            let item = value.split(',');
             return {
                 up: item[0],
                 down: item[1],
@@ -117,47 +116,35 @@ export class ExcelToJson {
             if (!value) {
                 return 0
             }
-            console.log(value);
-            value = value + (new Date()).getTimezoneOffset() / 60 / 24
-            let sm = (value - 1) * 24 * 3600000 + 1
-            let date = new Date(sm)
-            date.setUTCFullYear(date.getFullYear() - 70)
-            let s = parseInt('' + date.getTime() / 1000);
-            console.log(s)
-            if (s % 10 === 9) {
-                s += 1
-            }
-            return s;
+            let offsetTime = (new Date()).getTimezoneOffset() * 60;
+            return parseInt((value - 25569) * 86400 + offsetTime + '')
         } else if (filed === 'gender') {
-            if (value === '男') {
-                return 1;
-            } else if (value === '女') {
-                return 2;
-            } else {
+            if (value !== '男' || value !== '女') {
                 return 0;
             }
+            return value === '男' ? 1 : 2;
         } else if (filed === 'type') {
-            if (value === '成品') {
-                return 1;
-            } else if (value === '碎片') {
-                return 2;
-            }
+            return value === '成品' ? 1 : 2;
         } else if (filed === 'link') {
             return this.parseLink(value)
         } else if (filed === 'effectStep') {
             return this.parseEffectStep(value);
-        } else if (filed === 'timesPrice') {
+        } else if (filed === 'timesPrice' || filed === 'vipTimesPrice') {
             return this.parseTimesPrice(value)
         }
         return value
     }
 
+    /**
+     * 10@540#100@5400
+     * @param value
+     */
     private parseTimesPrice(value: string)
     {
-        let data = value.split('#')
-        let result:Array<Hash> = []
+        let data = value.split('#');
+        let result:Array<Hash> = [];
         data.forEach((element) => {
-            let item = element.split('@')
+            let item = element.split('@');
             result.push({
                 times: parseInt(item[0]),
                 price: parseFloat(item[1]),
@@ -167,15 +154,15 @@ export class ExcelToJson {
     }
 
     /**
-     * 进度
+     * 进度 1@0.8#3@1
      * @param value
      */
     private parseEffectStep(value: string): Array<Hash>
     {
-        let data = value.split('#')
-        let result:Array<Hash> = []
+        let data = value.split('#');
+        let result:Array<Hash> = [];
         data.forEach((element) => {
-            let item = element.split('@')
+            let item = element.split('@');
             result.push({
                 effectId: parseInt(item[0]),
                 step: parseFloat(item[1]) * 100,
@@ -184,6 +171,10 @@ export class ExcelToJson {
         return result;
     }
 
+    /**
+     * webview#https://party.haochang.tv/share/notices?noticeId=2756080
+     * @param value
+     */
     private parseLink(value: string) {
         if (!value || value.length <= 0) {
             return '';
@@ -220,6 +211,11 @@ export class ExcelToJson {
         return toBase64(str);
     }
 
+    /**
+     * 强制类型
+     * @param valueType
+     * @param format
+     */
     private forceType(valueType: string, format: boolean) {
         if (!format) {
             return null

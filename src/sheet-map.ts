@@ -68,6 +68,7 @@ export let sheetsMap: SheetMap = {
             'priceStep#s',
             'price.tenTimes#n',
             'timesPrice#s',
+            'vipTimesPrice#s',
             'lotteryGoods#s',
             'cover.female#s',
             'cover.male#s',
@@ -140,5 +141,5 @@ export let sheetsMap: SheetMap = {
             'upCoordinate.y#n',
         ]
     }
-}
+};
 

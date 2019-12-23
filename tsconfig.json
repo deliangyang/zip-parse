@@ -5,7 +5,6 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        //"declaration": true,                   // 生成相应的 '.d.ts' 文件
         "target": "ES5",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

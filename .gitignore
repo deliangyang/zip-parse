@@ -4,3 +4,5 @@ node_modules
 dist
 *.xlsx
 531
+test.ts
+test.js
