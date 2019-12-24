@@ -68,6 +68,7 @@ export let sheetsMap: SheetMap = {
             'priceStep#s',
             'price.tenTimes#n',
             'timesPrice#s',
+            'vipPriceStep#s',
             'vipTimesPrice#s',
             'lotteryGoods#s',
             'cover.female#s',

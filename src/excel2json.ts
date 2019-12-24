@@ -117,7 +117,7 @@ export class ExcelToJson {
                 return 0
             }
             let offsetTime = (new Date()).getTimezoneOffset() * 60;
-            return parseInt((value - 25569) * 86400 + offsetTime + '')
+            return Math.round((value - 25569) * 86400 + offsetTime)
         } else if (filed === 'gender') {
             if (value !== '男' || value !== '女') {
                 return 0;
