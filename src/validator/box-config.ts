@@ -4,6 +4,7 @@ import {EffectValidator} from "./effect";
 import * as _ from 'lodash'
 import {MaterialValidator} from "./material";
 import {Hash} from "../excel2json";
+import {parse} from "ts-node";
 
 interface Price {
     oneTimes: number,
@@ -14,6 +15,11 @@ interface Cover {
     female: string,
     male: string,
     normal: string,
+}
+
+interface TimesPrice {
+    times: number,
+    price: number,
 }
 
 export interface BoxConfig extends Datum {
@@ -27,8 +33,9 @@ export interface BoxConfig extends Datum {
     effectId: number
     lotteryGoods: string
     priceStep: string
-    timesPrice: Array<Hash>
-    vipTimesPrice: Array<Hash>
+    vipPriceStep: string
+    timesPrice: Array<TimesPrice>
+    vipTimesPrice: Array<TimesPrice>
     effectStep: Array<Hash>
 }
 
@@ -52,6 +59,8 @@ export class BoxConfigValidator extends Validator {
         this.checkEmpty('封面图-女', boxConfig.cover.female);
         this.checkEmpty('封面图-男', boxConfig.cover.male);
         this.checkEmpty('封面图-正常', boxConfig.cover.normal);
+        this.checkEmpty('VIP抽一次阶梯价格', boxConfig.vipPriceStep);
+        this.checkEmpty('VIP抽取次数价格', boxConfig.vipTimesPrice);
 
         if (boxConfig.freeCd && boxConfig.freeCd <= 0) {
             this.errMessage('免费抽取CD(天) 需大于0')
@@ -120,6 +129,24 @@ export class BoxConfigValidator extends Validator {
             }
         }
 
+        if (!boxConfig.vipPriceStep || boxConfig.vipPriceStep.length < 0) {
+            this.errMessage('抽一次VIP阶梯价格，不能为空')
+        } else if (boxConfig.vipPriceStep) {
+            let prices = boxConfig.vipPriceStep.split('#');
+            if (prices.length <= 0) {
+                this.errMessage('抽一次VIP阶梯价格, 格式不正确')
+            }
+            let newNums:number[] = prices.map((num) => {
+                return parseInt(num)
+            });
+            console.log(newNums);
+            let maxPrice = Math.max(...newNums);
+            console.log('max price:' + maxPrice);
+            if (!maxPrice || maxPrice > boxConfig.price.oneTimes) {
+                this.errMessage('抽一次VIP阶梯价格, 最大一位数不能超过抽一次金币')
+            }
+        }
+
         let hasOriginEffectStepId = false;
         if (boxConfig.effectStep) {
             boxConfig.effectStep.forEach(element => {
@@ -143,6 +170,28 @@ export class BoxConfigValidator extends Validator {
 
         if (!hasOriginTimesPrice) {
             this.errMessage('timesPrice未包含priceMul ' + boxConfig.price.tenTimes);
+        }
+        let oncePriceSteps = boxConfig.priceStep.split('#');
+        let onceVipPriceSteps = boxConfig.vipPriceStep.split('#');
+        let lastPrice = parseInt(oncePriceSteps.pop());
+        if (boxConfig.price.oneTimes !== lastPrice) {
+            this.errMessage('最后一个价格必须等于抽一次价格')
+        }
+
+        if (oncePriceSteps.length + 1 !== onceVipPriceSteps.length) {
+            this.errMessage('数量必须与抽1次阶梯价格一致')
+        }
+
+        try {
+            boxConfig.timesPrice.forEach((value, idx) => {
+                if (value.times !== boxConfig.vipTimesPrice[idx].times) {
+                    let res = [value, idx, boxConfig.vipTimesPrice];
+                    console.log(res)
+                    this.errMessage('抽取次数2和3必须与前面一致')
+                }
+            });
+        } catch (e) {
+            this.errMessage('抽取次数2和3必须与前面一致：' + e)
         }
 
         return this.container
