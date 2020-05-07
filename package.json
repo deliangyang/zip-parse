@@ -5,25 +5,24 @@
   "main": "webpack.config.js",
   "dependencies": {
     "@types/js-base64": "^2.3.1",
-    "@types/jszip": "^3.1.5",
+    "@types/node": "^13.13.5",
     "js-base64": "^2.5.1",
-    "jszip": "^3.2.1",
+    "jszip": "^3.4.0",
     "lodash": "^4.17.11",
     "xlsx": "^0.14.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/lodash": "^4.14.123",
-    "@types/mocha": "^5.2.6",
+    "@types/chai": "^4.2.11",
+    "@types/lodash": "^4.14.150",
+    "@types/mocha": "^5.2.7",
     "@types/should": "^13.0.0",
     "chai": "^4.2.0",
     "commonjs": "0.0.1",
-    "mocha": "^6.1.4",
-    "ts-loader": "^5.4.6",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5",
-    "webpack": "^4.34.0",
-    "webpack-cli": "^3.3.4"
+    "mocha": "^6.2.3",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "test": "mocha -r ./node_modules/ts-node/register src/package.test.ts",
